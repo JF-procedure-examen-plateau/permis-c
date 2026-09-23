@@ -13,7 +13,7 @@ Exemples : <b>ceinture de sécurité, airbags, appuie-tête et structure de prot
 ACTIVE → A → AVANT → éviter l’accident.<br>
 PASSIVE → P → PROTÉGER → limiter les blessures lorsque l’accident se produit.
 </div></details><h3>Systèmes de sécurité et d’aides à la conduite</h3>
-<div class=panel><b>🔊 Écouter la fiche</b><br><button onclick='speak(full)'>▶ Écouter</button><button onclick='speechSynthesis.pause()'>⏸ Pause</button><button onclick='speechSynthesis.resume()'>▶ Reprendre</button><button onclick='speechSynthesis.cancel()'>⏹ Arrêter</button></div>
+<div class=panel><b>🔊 Écouter la fiche</b><br><button onclick='speak(full)'>▶ Écouter</button><button onclick='speechSynthesis.pause()'>⏸ Pause</button><button onclick='speechSynthesis.resume()'>▶ Reprendre</button><button onclick='stopAudio()'>⏹ Arrêter</button></div>
 <details><summary>🧠 Définition</summary><div class='content'>Les systèmes de sécurité et d’aide à la conduite, souvent appelés ADAS, sont des équipements qui peuvent <b>informer, alerter ou assister le conducteur</b>. Certains agissent sur le freinage, la trajectoire ou la vitesse dans des situations déterminées.<br><br>Ils améliorent la sécurité mais ne rendent pas le véhicule autonome : <b>le conducteur reste responsable de la conduite, de l’observation et de la maîtrise du poids lourd.</b></div></details>
 <details><summary>🛞 ABS — antiblocage des roues</summary><div class='content'>L’ABS évite le blocage prolongé des roues lors d’un freinage appuyé. Il permet de conserver davantage de capacité directionnelle et de stabilité pendant le freinage.<br><br>Avec l’ABS, je freine franchement si la situation l’exige et je garde la maîtrise de la direction. Les pulsations ressenties dans la pédale peuvent correspondre au fonctionnement du système. <b>L’ABS ne supprime pas les lois de la physique et ne garantit pas une distance de freinage plus courte dans toutes les situations.</b></div></details>
 <details><summary>🧭 ESC / ESP — contrôle de stabilité</summary><div class='content'>Le contrôle électronique de stabilité compare la trajectoire demandée par le conducteur au comportement réel du véhicule. Lorsqu’il détecte une perte de stabilité, il peut agir sur le freinage de certaines roues et, selon le système, sur le couple moteur.<br><br>Il peut aider à corriger une dérive, mais il ne permet pas de prendre un virage trop vite et ne peut pas créer d’adhérence lorsque la chaussée n’en offre plus.</div></details>
@@ -43,6 +43,7 @@ function splitSpeech(t){
   if(cur)parts.push(cur);
   return parts;
 }
+function stopAudio(){speechStopped=true;speechQueue=[];speechPos=0;speechSynthesis.cancel();}
 function speakNext(){
   if(speechStopped||speechPos>=speechQueue.length)return;
   let u=new SpeechSynthesisUtterance(speechQueue[speechPos]);
