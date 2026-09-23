@@ -100,7 +100,13 @@ A('6. Test du frein de service',['Accélérer légèrement.','Avancer suffisamme
 A('7. Fin des essais',['Remettre la boîte au neutre.','Enclencher le frein de parc.','Retirer le pied du frein de service.'],['Essais de freins terminés et concluants. Fin du Socle 2.'])])
 ];
 const $=s=>document.querySelector(s),home=$('#home'),detail=$('#detail'),menu=$('#menu'),content=$('#content'),title=$('#title'),section=$('#section'),count=$('#count'),memo=$('#memo'),bar=$('#bar'),prev=$('#prev'),next=$('#next');let si=0,st=0;
-D.forEach((s,i)=>{const b=document.createElement('button');b.innerHTML='<span>'+s.t+'</span><small>Toucher pour ouvrir →</small>';b.onclick=()=>{if(s.t.startsWith('SOCLE 1')){location.href='Permis_C_Socle1_INTERACTIF_COMPLET_V11.html'}else{open(i)}};menu.appendChild(b)});
+D.forEach((s,i)=>{const b=document.createElement('button');b.innerHTML='<span>'+s.t+'</span><small>Toucher pour ouvrir →</small>';b.onclick=()=>open(i);menu.appendChild(b)});
+const socle1Choices=document.createElement('div');
+socle1Choices.style.cssText='grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:-2px 0 6px';
+socle1Choices.innerHTML='<button id="socle1Text" style="background:var(--accentbg)">📖 SOCLE 1 — Version écrite<small>Ouvrir le déroulé texte →</small></button><button id="socle1Interactive" style="background:var(--accentbg)">🚛 SOCLE 1 — Version interactive<small>Ouvrir la V11 →</small></button>';
+menu.insertBefore(socle1Choices,menu.children[1]);
+document.querySelector('#socle1Text').onclick=()=>open(0);
+document.querySelector('#socle1Interactive').onclick=()=>{location.href='Permis_C_Socle1_INTERACTIF_COMPLET_V11.html'};
 function open(i){si=i;st=0;home.classList.add('hidden');detail.classList.remove('hidden');render();window.scrollTo({top:0,behavior:'smooth'})}
 function render(){const s=D[si],x=s.x[st];section.textContent=s.t;title.textContent=x.t;count.textContent=(st+1)+' / '+s.x.length;bar.style.width=((st+1)/s.x.length*100)+'%';memo.innerHTML=s.m?'<div class="memo">'+s.m+'</div>':'';let h='';if(x.d.length)h+='<div class="group"><h3>👣 CE QUE JE FAIS</h3>'+x.d.map((v,i)=>'<div class="step"><strong>'+(i+1)+'.</strong><span>'+v+'</span></div>').join('')+'</div>';if(x.s.length)h+='<div class="group"><h3>🗣️ CE QUE JE DIS</h3>'+x.s.map(v=>'<div class="say">« '+v+' »</div>').join('')+'</div>';if(x.n)h+='<div class="note"><strong>📝 '+x.n+'</strong></div>';content.innerHTML=h;prev.disabled=st===0;prev.style.opacity=st===0?'.45':'1';next.textContent=st===s.x.length-1?'✓ Terminé — Menu':'Suivante →'}
 $('#homeBtn').onclick=()=>{detail.classList.add('hidden');home.classList.remove('hidden')};prev.onclick=()=>{if(st>0){st--;render();window.scrollTo({top:0,behavior:'smooth'})}};next.onclick=()=>{if(st<D[si].x.length-1){st++;render();window.scrollTo({top:0,behavior:'smooth'})}else{detail.classList.add('hidden');home.classList.remove('hidden')}};
