@@ -10,6 +10,13 @@
 main{max-width:850px;margin:auto;padding:20px 14px 50px}h1{font-size:28px;margin:0 0 5px}.sub{color:var(--muted);margin:0 0 20px}
 .menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.menu button,.nav button{font:inherit;cursor:pointer}
 .menu button{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:17px;text-align:left;font-weight:750;min-height:76px}.menu small{display:block;color:var(--muted);font-weight:400;margin-top:5px}
+.oral-zone{margin-top:22px;padding-top:20px;border-top:2px solid var(--border)}
+.oral-zone h2{margin:0 0 6px}.oral-zone p{color:var(--muted);margin:0 0 14px}
+.oral-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.oral-card{display:block;text-decoration:none;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px;font-weight:750;min-height:76px}
+.oral-card small{display:block;color:var(--muted);font-weight:400;margin-top:5px}
+.random-oral{width:100%;margin:0 0 12px;background:var(--accent);color:#fff;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:800;cursor:pointer}
+@media(max-width:600px){.oral-grid{grid-template-columns:1fr}}
 .hidden{display:none}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.nav button{border:1px solid var(--border);background:#fff;border-radius:10px;padding:11px 14px;font-weight:700}.nav .next{background:var(--accent);color:#fff;border-color:var(--accent)}
 .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.section{font-size:14px;color:var(--muted)}h2{font-size:23px;margin:3px 0 15px}.count{white-space:nowrap;background:var(--panel);padding:6px 10px;border-radius:99px;font-weight:750}
 .memo,.note{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:15px}.group{margin:18px 0}.group h3{font-size:17px;margin:0 0 9px}.step{display:flex;gap:10px;background:var(--panel);border-radius:10px;padding:12px;margin:8px 0}.say{background:var(--accentbg);border-left:4px solid var(--accent);border-radius:8px;padding:12px;margin:8px 0;font-weight:700}.progress{height:8px;background:#e1e5ec;border-radius:99px;overflow:hidden;margin-top:22px}.bar{height:100%;background:var(--accent)}
@@ -18,7 +25,27 @@ main{max-width:850px;margin:auto;padding:20px 14px 50px}h1{font-size:28px;margin
 </head>
 <body><main>
 <h1>🚛 Permis C — Révisions plateau</h1><p class="sub">Support stagiaire interactif — Procédure examen plateau</p>
-<section id="home"><div id="menu" class="menu"></div></section>
+<section id="home"><div id="menu" class="menu"></div>
+<div class="oral-zone">
+<h2>🎤 FICHES ORALES — 12 fiches</h2>
+<p>Choisis une fiche ou effectue un tirage aléatoire. Chaque fiche conserve son audio, son résumé et son QCM de 10 questions tirées parmi 50.</p>
+<button class="random-oral" onclick="openRandomOral()">🎲 Tirer une fiche orale au hasard</button>
+<div class="oral-grid">
+<a class="oral-card" href="fiche-1.html"><span>FICHE 1</span><small>Conditions atmosphériques difficiles — Route de nuit</small></a>
+<a class="oral-card" href="fiche-2.html"><span>FICHE 2</span><small>Comportement en cas d’accident</small></a>
+<a class="oral-card" href="fiche-3.html"><span>FICHE 3</span><small>Conduite en montagne ou zones accidentées</small></a>
+<a class="oral-card" href="fiche-4.html"><span>FICHE 4</span><small>Gestes et postures — Accident du travail</small></a>
+<a class="oral-card" href="fiche-5.html"><span>FICHE 5</span><small>Chargement — Surcharge</small></a>
+<a class="oral-card" href="fiche-6.html"><span>FICHE 6</span><small>Le dépassement</small></a>
+<a class="oral-card" href="fiche-7.html"><span>FICHE 7</span><small>Dynamique du véhicule</small></a>
+<a class="oral-card" href="fiche-8.html"><span>FICHE 8</span><small>Alcool, stupéfiants, médicaments</small></a>
+<a class="oral-card" href="fiche-9.html"><span>FICHE 9</span><small>Éco-conduite et conduite citoyenne</small></a>
+<a class="oral-card" href="fiche-10.html"><span>FICHE 10</span><small>Porte-à-faux — Angles morts</small></a>
+<a class="oral-card" href="fiche-11.html"><span>FICHE 11</span><small>Tunnels et passages à niveau</small></a>
+<a class="oral-card" href="fiche-12.html"><span>FICHE 12</span><small>Systèmes de sécurité et aides à la conduite</small></a>
+</div>
+</div>
+</section>
 <section id="detail" class="hidden">
 <div class="nav"><button id="homeBtn">← Menu</button><button id="prev">← Précédente</button><button id="next" class="next">Suivante →</button></div>
 <div class="top"><div><div id="section" class="section"></div><h2 id="title"></h2></div><div id="count" class="count"></div></div>
@@ -77,4 +104,5 @@ D.forEach((s,i)=>{const b=document.createElement('button');b.innerHTML='<span>'+
 function open(i){si=i;st=0;home.classList.add('hidden');detail.classList.remove('hidden');render();window.scrollTo({top:0,behavior:'smooth'})}
 function render(){const s=D[si],x=s.x[st];section.textContent=s.t;title.textContent=x.t;count.textContent=(st+1)+' / '+s.x.length;bar.style.width=((st+1)/s.x.length*100)+'%';memo.innerHTML=s.m?'<div class="memo">'+s.m+'</div>':'';let h='';if(x.d.length)h+='<div class="group"><h3>👣 CE QUE JE FAIS</h3>'+x.d.map((v,i)=>'<div class="step"><strong>'+(i+1)+'.</strong><span>'+v+'</span></div>').join('')+'</div>';if(x.s.length)h+='<div class="group"><h3>🗣️ CE QUE JE DIS</h3>'+x.s.map(v=>'<div class="say">« '+v+' »</div>').join('')+'</div>';if(x.n)h+='<div class="note"><strong>📝 '+x.n+'</strong></div>';content.innerHTML=h;prev.disabled=st===0;prev.style.opacity=st===0?'.45':'1';next.textContent=st===s.x.length-1?'✓ Terminé — Menu':'Suivante →'}
 $('#homeBtn').onclick=()=>{detail.classList.add('hidden');home.classList.remove('hidden')};prev.onclick=()=>{if(st>0){st--;render();window.scrollTo({top:0,behavior:'smooth'})}};next.onclick=()=>{if(st<D[si].x.length-1){st++;render();window.scrollTo({top:0,behavior:'smooth'})}else{detail.classList.add('hidden');home.classList.remove('hidden')}};
+function openRandomOral(){const n=Math.floor(Math.random()*12)+1;location.href='fiche-'+n+'.html'}
 </script></body></html>
