@@ -90,7 +90,7 @@ function startQuiz(){
 }
 function draw(){
  let x=Q[i];
- quiz.innerHTML=`<div class="quiz"><div class="meta"><span>Question ${i+1} / 10</span><span>Erreurs : ${errors}</span></div><div style="font-size:13px;color:#667085;margin-top:8px">10 questions tirées au hasard parmi 30</div><h2>${x.q}</h2><div id="opts">${x.o.map((v,n)=>`<button class="opt" onclick="ans(${n})">${String.fromCharCode(65+n)}. ${v}</button>`).join("")}</div><div id="fb"></div></div>`;
+ quiz.innerHTML=`<div class="quiz"><div class="meta"><span>Question ${i+1} / 10</span><span>Erreurs : ${errors}</span></div><div style="font-size:13px;color:#667085;margin-top:8px">10 questions tirées au hasard parmi 50</div><h2>${x.q}</h2><div id="opts">${x.o.map((v,n)=>`<button class="opt" onclick="ans(${n})">${String.fromCharCode(65+n)}. ${v}</button>`).join("")}</div><div id="fb"></div></div>`;
 }
 function ans(n){
  let x=Q[i]; document.querySelectorAll("#opts button").forEach(b=>b.disabled=true);
