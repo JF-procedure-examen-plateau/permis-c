@@ -111,8 +111,51 @@ const $=s=>document.querySelector(s),home=$('#home'),detail=$('#detail'),menu=$(
 function openSection(i){si=i;st=0;home.classList.add('hidden');detail.classList.remove('hidden');render();window.scrollTo({top:0,behavior:'smooth'})}
 function render(){const s=D[si],x=s.x[st];section.textContent=s.t;title.textContent=x.t;count.textContent=(st+1)+' / '+s.x.length;bar.style.width=((st+1)/s.x.length*100)+'%';memo.innerHTML=s.m?'<div class="memo">'+s.m+'</div>':'';listenTheme.classList.remove('hidden');interactiveLink.classList.add('hidden');if(si===0){interactiveLink.href='socle-1-interactif-v11.html';interactiveLink.classList.remove('hidden')}if(si===2){interactiveLink.href='theme-2-interactif.html';interactiveLink.classList.remove('hidden')}let h='';if(x.d.length)h+='<div class="group"><h3>👣 CE QUE JE FAIS</h3>'+x.d.map((v,i)=>'<div class="step"><strong>'+(i+1)+'.</strong><span>'+v+'</span></div>').join('')+'</div>';if(x.s.length)h+='<div class="group"><h3>🗣️ CE QUE JE DIS</h3>'+x.s.map(v=>'<div class="say">« '+v+' »</div>').join('')+'</div>';if(x.n)h+='<div class="note"><strong>📝 '+x.n+'</strong></div>';content.innerHTML=h;prev.disabled=st===0;prev.style.opacity=st===0?'.45':'1';next.textContent=st===s.x.length-1?'✓ Terminé — Menu':'Suivante →'}
 $('#homeBtn').onclick=()=>{detail.classList.add('hidden');home.classList.remove('hidden')};prev.onclick=()=>{if(st>0){st--;render();window.scrollTo({top:0,behavior:'smooth'})}};next.onclick=()=>{if(st<D[si].x.length-1){st++;render();window.scrollTo({top:0,behavior:'smooth'})}else{detail.classList.add('hidden');home.classList.remove('hidden')}};
-function cleanSpeech(t){return t.replace(/[«»"“”.,;:!?…()\[\]{}—–-]/g,' ').replace(/\s+/g,' ').trim()}
-function speakCalm(t){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(cleanSpeech(t));u.lang='fr-FR';u.rate=.82;u.pitch=1;speechSynthesis.speak(u)}
+function cleanSpeech(t){return String(t).replace(/\s+/g,' ').trim()}
+function speakCalm(t){naturalSpeak(t,0.82)}
 listenTheme.onclick=()=>{const s=D[si],x=s.x[st];const txt=[x.t,...x.d,...x.s].join(' ');speakCalm(txt)};
 function openRandomOral(){const n=Math.floor(Math.random()*12)+1;location.href='fiche-'+n+'.html'}
-</script></body></html>
+</script><script>
+/* Lecture vocale naturelle : conserve la ponctuation et marque les pauses. */
+window.__speechToken = 0;
+window.__speechTimer = null;
+window.__nativeSpeechCancel = window.speechSynthesis && window.speechSynthesis.cancel ? window.speechSynthesis.cancel.bind(window.speechSynthesis) : function(){};
+function naturalSpeechCancel(){
+  window.__speechToken++;
+  if(window.__speechTimer){ clearTimeout(window.__speechTimer); window.__speechTimer=null; }
+  window.__nativeSpeechCancel();
+}
+function naturalSpeak(text, rate){
+  if(!('speechSynthesis' in window) || !text) return;
+  naturalSpeechCancel();
+  const token=window.__speechToken;
+  const source=String(text).replace(/\r/g,'').replace(/[•→←✓]/g,' ').replace(/[ \t]+/g,' ').trim();
+  const parts=[];
+  source.split(/\n+/).forEach((line,li,arr)=>{
+    const s=line.trim(); if(!s) return;
+    const re=/([^,;:.!?…]+[,;:.!?…]?)/g; let m;
+    while((m=re.exec(s))){
+      const chunk=m[1].trim(); if(!chunk) continue;
+      const last=chunk.slice(-1); let pause=180;
+      if(last===',') pause=280;
+      else if(last===';' || last===':') pause=450;
+      else if('.!?…'.includes(last)) pause=650;
+      parts.push({text:chunk,pause:pause});
+    }
+    if(li<arr.length-1 && parts.length) parts[parts.length-1].pause=Math.max(parts[parts.length-1].pause,850);
+  });
+  if(!parts.length) parts.push({text:source,pause:0});
+  let i=0;
+  function next(){
+    if(token!==window.__speechToken || i>=parts.length) return;
+    const p=parts[i++];
+    const u=new SpeechSynthesisUtterance(p.text);
+    u.lang='fr-FR'; u.rate=rate||0.82; u.pitch=1; u.volume=1;
+    u.onend=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,p.pause); };
+    u.onerror=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,120); };
+    window.speechSynthesis.speak(u);
+  }
+  next();
+}
+</script>
+</body></html>

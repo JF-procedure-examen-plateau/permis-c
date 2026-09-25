@@ -71,8 +71,51 @@ header{background:var(--pale);padding:18px 16px;text-align:center;border-bottom:
 <div class="explanation" id="e10">Non. Le turbocompresseur fait l’inverse : il augmente la quantité d’air envoyée dans les cylindres en comprimant l’air d’admission. Cela permet au moteur de brûler davantage de carburant et de produire plus de puissance.<div><button class="speak expvoice" onclick="speakText(E[10])">🔊 Écouter l’explication</button></div></div>
 </div></section></main><script>
 const Q={"1": "Je possède les catégories B – C et CE. Conduire ma voiture personnelle après avoir pris de la drogue peut entraîner la perte de la catégorie B de mon permis de conduire uniquement. Vrai ou Faux ?", "2": "En circulation, le fait de freiner désactive obligatoirement le régulateur de vitesse. Vrai ou Faux ?", "3": "Quelle est la longueur maximale d’un camion isolé à 2 essieux ?", "4": "Vous conduisez un camion neuf de 19 t de PTAC. A quelle vitesse êtes vous limité sur route non prioritaire ?", "5": "Ce signal concerne-t-il les véhicules affectés au transport de produits dangereux ou au transport de produits explosifs ?", "6": "Au bout de combien de jours, au maximum, l'entreprise doit-elle “télécharger” les données de votre carte conducteur ?", "7": "Le temps de conduite pour venir à l’entreprise, le matin, avec votre véhicule personnel doit-il être ajouté au temps de conduite de votre véhicule lourd ?", "8": "Comment appelle-t-on les transports exécutés à titre non onéreux servant à transporter les marchandises de sa propre entreprise ?", "9": "Le modèle allemand, italien ou espagnol d'un constat européen comporte-t-il t-il les mêmes rubriques que le modèle français ?", "10": "Le turbocompresseur a pour fonction de diminuer l'air admis dans les cylindres ?"};const E={"1": "Faux. Une infraction liée aux stupéfiants concerne le permis de conduire lui-même, pas seulement la catégorie B. Les autres catégories détenues peuvent donc également être concernées.", "2": "Vrai. Quand le conducteur freine, le régulateur de vitesse se désactive afin que le conducteur reprenne immédiatement la maîtrise de la vitesse du véhicule.", "3": "Un camion isolé, qu’il ait 2 essieux ou davantage, ne doit en règle générale pas dépasser 12 mètres de longueur.", "4": "Un camion de plus de 12 tonnes est limité à 80 km/h sur les autres routes. Avec 19 tonnes de PTAC, la réponse est donc 80 km/h.", "5": "Le symbole avec l’explosion indique les véhicules transportant des produits explosifs. Il ne concerne donc pas tous les produits dangereux.", "6": "Les données de la carte conducteur doivent être téléchargées régulièrement par l’entreprise. Le délai maximal retenu ici est de 28 jours.", "7": "Non. Le trajet domicile-travail effectué avec son véhicule personnel n’est pas du temps de conduite du véhicule lourd. Il n’est donc pas ajouté à ce temps de conduite.", "8": "On parle de transport pour compte propre, aussi appelé transport privé : l’entreprise transporte ses propres marchandises pour les besoins de son activité, sans effectuer ce transport pour un client.", "9": "Oui. Le constat européen utilise les mêmes rubriques d’un pays à l’autre. Même si la langue change, les cases correspondent, ce qui permet de remplir le constat avec l’autre conducteur.", "10": "Non. Le turbocompresseur fait l’inverse : il augmente la quantité d’air envoyée dans les cylindres en comprimant l’air d’admission. Cela permet au moteur de brûler davantage de carburant et de produire plus de puissance."};
-function speakText(t){speechSynthesis.cancel();const clean=t.replace(/[«»“…?”]/g,' ').replace(/\s+/g,' ').trim();const u=new SpeechSynthesisUtterance(clean);u.lang='fr-FR';u.rate=.88;speechSynthesis.speak(u)}
-function toggleAnswer(n,b){const a=document.getElementById('a'+n),eb=document.getElementById('eb'+n),e=document.getElementById('e'+n);const open=a.classList.toggle('show');b.textContent=open?'🙈 Masquer la réponse':'👁 Voir la réponse';eb.classList.toggle('show',open);if(!open){e.classList.remove('show');eb.textContent='💡 Explication';speechSynthesis.cancel()}}
-function toggleExplanation(n,b){const e=document.getElementById('e'+n);const open=e.classList.toggle('show');b.textContent=open?'💡 Masquer l’explication':'💡 Explication';if(!open)speechSynthesis.cancel()}
-window.addEventListener('beforeunload',()=>speechSynthesis.cancel());
-</script></body></html>
+function speakText(t){naturalSpeak(t,0.82)}
+function toggleAnswer(n,b){const a=document.getElementById('a'+n),eb=document.getElementById('eb'+n),e=document.getElementById('e'+n);const open=a.classList.toggle('show');b.textContent=open?'🙈 Masquer la réponse':'👁 Voir la réponse';eb.classList.toggle('show',open);if(!open){e.classList.remove('show');eb.textContent='💡 Explication';naturalSpeechCancel()}}
+function toggleExplanation(n,b){const e=document.getElementById('e'+n);const open=e.classList.toggle('show');b.textContent=open?'💡 Masquer l’explication':'💡 Explication';if(!open)naturalSpeechCancel()}
+window.addEventListener('beforeunload',()=>naturalSpeechCancel());
+</script><script>
+/* Lecture vocale naturelle : conserve la ponctuation et marque les pauses. */
+window.__speechToken = 0;
+window.__speechTimer = null;
+window.__nativeSpeechCancel = window.speechSynthesis && window.speechSynthesis.cancel ? window.speechSynthesis.cancel.bind(window.speechSynthesis) : function(){};
+function naturalSpeechCancel(){
+  window.__speechToken++;
+  if(window.__speechTimer){ clearTimeout(window.__speechTimer); window.__speechTimer=null; }
+  window.__nativeSpeechCancel();
+}
+function naturalSpeak(text, rate){
+  if(!('speechSynthesis' in window) || !text) return;
+  naturalSpeechCancel();
+  const token=window.__speechToken;
+  const source=String(text).replace(/\r/g,'').replace(/[•→←✓]/g,' ').replace(/[ \t]+/g,' ').trim();
+  const parts=[];
+  source.split(/\n+/).forEach((line,li,arr)=>{
+    const s=line.trim(); if(!s) return;
+    const re=/([^,;:.!?…]+[,;:.!?…]?)/g; let m;
+    while((m=re.exec(s))){
+      const chunk=m[1].trim(); if(!chunk) continue;
+      const last=chunk.slice(-1); let pause=180;
+      if(last===',') pause=280;
+      else if(last===';' || last===':') pause=450;
+      else if('.!?…'.includes(last)) pause=650;
+      parts.push({text:chunk,pause:pause});
+    }
+    if(li<arr.length-1 && parts.length) parts[parts.length-1].pause=Math.max(parts[parts.length-1].pause,850);
+  });
+  if(!parts.length) parts.push({text:source,pause:0});
+  let i=0;
+  function next(){
+    if(token!==window.__speechToken || i>=parts.length) return;
+    const p=parts[i++];
+    const u=new SpeechSynthesisUtterance(p.text);
+    u.lang='fr-FR'; u.rate=rate||0.82; u.pitch=1; u.volume=1;
+    u.onend=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,p.pause); };
+    u.onerror=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,120); };
+    window.speechSynthesis.speak(u);
+  }
+  next();
+}
+</script>
+</body></html>

@@ -195,11 +195,7 @@ button{border:0;border-radius:9px;padding:12px 14px;font-size:16px;font-weight:b
 </main>
 <script>
 const Q={"1": "Débrancher ou modifier les réglages du limiteur de vitesse peut entraîner une suspension du permis de conduire, même s’il n’y a pas eu d’excès de vitesse constaté. Vrai ou Faux ?", "2": "Une pierre coincée entre des roues jumelées peut entraîner l’éclatement d’un pneumatique. Vrai ou Faux ?", "3": "Vous chargez du sable dans un véhicule isolé comportant 3 essieux, quelle est la charge maximale autorisée sur l’essieu le plus chargé du groupe d’essieux moteur ?", "4": "Vous conduisez un camion neuf de 19 t de PTAC. A quelle vitesse êtes-vous limité en agglomération, sur une portion de route relevée à 70 km/h ?", "5": "Ce signal concerne-t-il uniquement les véhicules affectés au transport de marchandises excédant 3 500 kg de PTAC ?", "6": "Après 3 h de conduite continue, s’arrêter 10 mn sur un parking est-il considéré comme une pause ?", "7": "Vous attendez votre tour pour décharger sans connaître le temps d’attente. Sur quel symbole devez-vous positionner le sélecteur d’activité du chronotachygraphe ?", "8": "La licence de transport intérieur permet d’effectuer des transports de tout tonnage à condition de rester en France. Vrai ou Faux ?", "9": "Quand je circule en Espagne, quel numéro de téléphone est-il conseillé d’utiliser pour appeler les secours à partir d’un portable ?", "10": "Certains éléments de la chaîne cinématique nécessitent d’être vidangés ou ... ?"}; const E={"1": "Modifier ou neutraliser le limiteur de vitesse est une infraction en elle-même. La suspension du permis peut donc être encourue même sans excès de vitesse constaté.", "2": "Une pierre ou un autre corps étranger coincé entre deux roues jumelées peut détériorer les pneumatiques et provoquer leur éclatement.", "3": "Sur le groupe d’essieux moteur concerné, la charge maximale de l’essieu moteur peut être portée à 11,5 tonnes.", "4": "Pour un poids lourd de plus de 3,5 tonnes, la limitation reste à 50 km/h en agglomération, même lorsque la limitation générale de la portion est relevée à 70 km/h.", "5": "Non. Le panonceau représenté vise les véhicules de transport de marchandises, quelle que soit la limite de 3 500 kg mentionnée dans la question.", "6": "Non. Pour que cet arrêt soit considéré comme une pause, il aurait fallu que celle-ci soit la première pause et qu'elle soit d'un minimum de 15 minutes.", "7": "Lorsque le conducteur attend pour décharger sans connaître à l’avance la durée de cette attente, cette période est enregistrée en « autres tâches », symbole des marteaux.", "8": "Faux. La licence de transport intérieur ne permet pas, à elle seule, d’effectuer des transports de tout tonnage simplement parce que le véhicule reste en France.", "9": "Le 112 est le numéro d’appel d’urgence européen. Il peut être utilisé en Espagne, notamment depuis un téléphone portable.", "10": "Certains organes de la chaîne cinématique ont besoin d’entretien : selon l’organe, ils doivent notamment être vidangés ou graissés."};
-function speakText(t){
- speechSynthesis.cancel();
- const u=new SpeechSynthesisUtterance(t.replace(/[«»“…?”]/g,' ').replace(/\s+/g,' ').trim());
- u.lang='fr-FR';u.rate=.88;speechSynthesis.speak(u);
-}
+function speakText(t){naturalSpeak(t,0.82)}
 function toggleAnswer(n,b){
  const a=document.getElementById('a'+n),eb=document.getElementById('eb'+n),e=document.getElementById('e'+n);
  const open=a.classList.toggle('show'); b.textContent=open?'🙈 Masquer la réponse':'👁 Voir la réponse';
@@ -208,7 +204,50 @@ function toggleAnswer(n,b){
 function toggleExplanation(n,b){
  const e=document.getElementById('e'+n); const open=e.classList.toggle('show');
  b.textContent=open?'💡 Masquer l’explication':'💡 Explication';
- if(!open)speechSynthesis.cancel();
+ if(!open)naturalSpeechCancel();
 }
-window.addEventListener('beforeunload',()=>speechSynthesis.cancel());
-</script></body></html>
+window.addEventListener('beforeunload',()=>naturalSpeechCancel());
+</script><script>
+/* Lecture vocale naturelle : conserve la ponctuation et marque les pauses. */
+window.__speechToken = 0;
+window.__speechTimer = null;
+window.__nativeSpeechCancel = window.speechSynthesis && window.speechSynthesis.cancel ? window.speechSynthesis.cancel.bind(window.speechSynthesis) : function(){};
+function naturalSpeechCancel(){
+  window.__speechToken++;
+  if(window.__speechTimer){ clearTimeout(window.__speechTimer); window.__speechTimer=null; }
+  window.__nativeSpeechCancel();
+}
+function naturalSpeak(text, rate){
+  if(!('speechSynthesis' in window) || !text) return;
+  naturalSpeechCancel();
+  const token=window.__speechToken;
+  const source=String(text).replace(/\r/g,'').replace(/[•→←✓]/g,' ').replace(/[ \t]+/g,' ').trim();
+  const parts=[];
+  source.split(/\n+/).forEach((line,li,arr)=>{
+    const s=line.trim(); if(!s) return;
+    const re=/([^,;:.!?…]+[,;:.!?…]?)/g; let m;
+    while((m=re.exec(s))){
+      const chunk=m[1].trim(); if(!chunk) continue;
+      const last=chunk.slice(-1); let pause=180;
+      if(last===',') pause=280;
+      else if(last===';' || last===':') pause=450;
+      else if('.!?…'.includes(last)) pause=650;
+      parts.push({text:chunk,pause:pause});
+    }
+    if(li<arr.length-1 && parts.length) parts[parts.length-1].pause=Math.max(parts[parts.length-1].pause,850);
+  });
+  if(!parts.length) parts.push({text:source,pause:0});
+  let i=0;
+  function next(){
+    if(token!==window.__speechToken || i>=parts.length) return;
+    const p=parts[i++];
+    const u=new SpeechSynthesisUtterance(p.text);
+    u.lang='fr-FR'; u.rate=rate||0.82; u.pitch=1; u.volume=1;
+    u.onend=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,p.pause); };
+    u.onerror=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,120); };
+    window.speechSynthesis.speak(u);
+  }
+  next();
+}
+</script>
+</body></html>

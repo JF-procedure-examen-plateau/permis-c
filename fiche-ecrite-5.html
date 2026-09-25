@@ -31,5 +31,48 @@
 <div class="answer" id="a10"><strong>RÉPONSE :</strong> D&#x27;alimentation</div><button class="explain-btn" id="eb10" onclick="toggleExplanation(10,this)">💡 Explication</button>
 <div class="explanation" id="e10">La deuxième est la pompe d&#x27;alimentation. Elle amène le carburant du réservoir vers le circuit d&#x27;injection, avant que la pompe haute pression ne l&#x27;envoie sous forte pression vers les injecteurs.<div><button class="speak expvoice" onclick="speakText(E[10])">🔊 Écouter l’explication</button></div></div></div></section></main><script>
 const Q={"1": "Le non-respect des limitations de tonnage pour le passage sur les ponts peut-il entraîner une suspension du permis de conduire ?", "2": "Dans un camion neuf, le passager doit-il obligatoirement attacher sa ceinture de sécurité ?", "3": "En règle générale, quel est le PTAC maximal d'un véhicule isolé comportant 2 essieux ?", "4": "Vous conduisez un camion de plus de 7,5 t de PTAC. Quand finit l'interdiction de circulation en fin de semaine ?", "5": "Cette signalisation de présignalisation peut annoncer une barrière de dégel. Vrai ou Faux ?", "6": "En double équipage, le temps passé sur la couchette d'un véhicule en circulation, est-il considéré comme repos journalier ?", "7": "Votre véhicule est équipé d’un chronotachygraphe numérique. Vous avez perdu votre carte “conducteur”, combien de jours, au maximum, pouvez-vous conduire sans carte ?", "8": "Suite au contrôle technique périodique, quelle lettre figure sur le certificat d'immatriculation lorsque le véhicule est accepté ?", "9": "Le signal de détresse peut-il remplacer le triangle de présignalisation pour un véhicule d'un PTAC de plus de 3,5 t ?", "10": "Le circuit d'alimentation d'un moteur diesel se compose, entre autres éléments, de deux pompes : l'une dite pompe d'injection haute pression, l'autre dite pompe ... ?"},E={"1": "Oui. Ne pas respecter une limitation de tonnage, notamment sur un pont, peut être une infraction grave : le poids du véhicule peut mettre en danger l'ouvrage et les autres usagers.", "2": "Oui. Lorsqu'une place est équipée d'une ceinture de sécurité, le passager doit l'attacher. La ceinture protège aussi le passager d'un poids lourd en cas de choc ou de freinage brutal.", "3": "Un véhicule isolé à 2 essieux peut avoir, en règle générale, un PTAC maximal de 19 tonnes.", "4": "Pour les véhicules concernés de plus de 7,5 tonnes, l'interdiction générale de circulation du week-end prend fin le dimanche à 22 heures. Le véhicule peut donc repartir à partir de 22 h, sauf restriction particulière.", "5": "Vrai. Cette présignalisation indique une déviation pour les véhicules dépassant le tonnage indiqué. Elle peut notamment être mise en place lorsqu'une barrière de dégel limite temporairement le tonnage autorisé sur une route.", "6": "Non. En double équipage, le temps passé sur la couchette pendant que le véhicule roule ne constitue pas un repos journalier : le repos journalier doit répondre aux conditions réglementaires de repos.", "7": "En cas de perte de la carte conducteur, le conducteur peut, sous conditions et avec les justificatifs nécessaires, conduire sans carte pendant une durée maximale de 15 jours calendaires.", "8": "Lorsque le véhicule est accepté au contrôle technique périodique, la lettre A figure sur le certificat d'immatriculation. Elle correspond à un résultat favorable.", "9": "Non. Les feux de détresse signalent le véhicule, mais ils ne remplacent pas le triangle lorsque celui-ci doit être utilisé. Le triangle sert à avertir les autres usagers en amont du danger.", "10": "La deuxième est la pompe d'alimentation. Elle amène le carburant du réservoir vers le circuit d'injection, avant que la pompe haute pression ne l'envoie sous forte pression vers les injecteurs."};
-function speakText(t){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[«»“…?”]/g,' ').replace(/\s+/g,' ').trim());u.lang='fr-FR';u.rate=.88;speechSynthesis.speak(u)}function toggleAnswer(n,b){const a=document.getElementById('a'+n),eb=document.getElementById('eb'+n),e=document.getElementById('e'+n),o=a.classList.toggle('show');b.textContent=o?'🙈 Masquer la réponse':'👁 Voir la réponse';eb.classList.toggle('show',o);if(!o){e.classList.remove('show');eb.textContent='💡 Explication';speechSynthesis.cancel()}}function toggleExplanation(n,b){const e=document.getElementById('e'+n),o=e.classList.toggle('show');b.textContent=o?'💡 Masquer l’explication':'💡 Explication';if(!o)speechSynthesis.cancel()}window.addEventListener('beforeunload',()=>speechSynthesis.cancel());
-</script></body></html>
+function speakText(t){naturalSpeak(t,0.82)}function toggleAnswer(n,b){const a=document.getElementById('a'+n),eb=document.getElementById('eb'+n),e=document.getElementById('e'+n),o=a.classList.toggle('show');b.textContent=o?'🙈 Masquer la réponse':'👁 Voir la réponse';eb.classList.toggle('show',o);if(!o){e.classList.remove('show');eb.textContent='💡 Explication';naturalSpeechCancel()}}function toggleExplanation(n,b){const e=document.getElementById('e'+n),o=e.classList.toggle('show');b.textContent=o?'💡 Masquer l’explication':'💡 Explication';if(!o)naturalSpeechCancel()}window.addEventListener('beforeunload',()=>naturalSpeechCancel());
+</script><script>
+/* Lecture vocale naturelle : conserve la ponctuation et marque les pauses. */
+window.__speechToken = 0;
+window.__speechTimer = null;
+window.__nativeSpeechCancel = window.speechSynthesis && window.speechSynthesis.cancel ? window.speechSynthesis.cancel.bind(window.speechSynthesis) : function(){};
+function naturalSpeechCancel(){
+  window.__speechToken++;
+  if(window.__speechTimer){ clearTimeout(window.__speechTimer); window.__speechTimer=null; }
+  window.__nativeSpeechCancel();
+}
+function naturalSpeak(text, rate){
+  if(!('speechSynthesis' in window) || !text) return;
+  naturalSpeechCancel();
+  const token=window.__speechToken;
+  const source=String(text).replace(/\r/g,'').replace(/[•→←✓]/g,' ').replace(/[ \t]+/g,' ').trim();
+  const parts=[];
+  source.split(/\n+/).forEach((line,li,arr)=>{
+    const s=line.trim(); if(!s) return;
+    const re=/([^,;:.!?…]+[,;:.!?…]?)/g; let m;
+    while((m=re.exec(s))){
+      const chunk=m[1].trim(); if(!chunk) continue;
+      const last=chunk.slice(-1); let pause=180;
+      if(last===',') pause=280;
+      else if(last===';' || last===':') pause=450;
+      else if('.!?…'.includes(last)) pause=650;
+      parts.push({text:chunk,pause:pause});
+    }
+    if(li<arr.length-1 && parts.length) parts[parts.length-1].pause=Math.max(parts[parts.length-1].pause,850);
+  });
+  if(!parts.length) parts.push({text:source,pause:0});
+  let i=0;
+  function next(){
+    if(token!==window.__speechToken || i>=parts.length) return;
+    const p=parts[i++];
+    const u=new SpeechSynthesisUtterance(p.text);
+    u.lang='fr-FR'; u.rate=rate||0.82; u.pitch=1; u.volume=1;
+    u.onend=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,p.pause); };
+    u.onerror=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,120); };
+    window.speechSynthesis.speak(u);
+  }
+  next();
+}
+</script>
+</body></html>
