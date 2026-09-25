@@ -272,7 +272,7 @@ function speakValidated(text){
   speechSynthesis.cancel();
   const clean=text.replace(/[•→←✓]/g,' ').replace(/\s+/g,' ').trim();
   const u=new SpeechSynthesisUtterance(clean);
-  u.lang='fr-FR'; u.rate=0.88; u.pitch=1;
+  u.lang='fr-FR'; u.rate=0.82; u.pitch=1;
   speechSynthesis.speak(u);
 }
 document.querySelectorAll('.hit').forEach(b=>{
