@@ -23,15 +23,17 @@ main{max-width:850px;margin:auto;padding:20px 14px 50px}h1{font-size:28px;margin
 @media(max-width:600px){.menu{grid-template-columns:1fr}h1{font-size:24px}.top{align-items:flex-start}main{padding-top:15px}}
 
 #welcome{max-width:850px;margin:0 auto;padding:12px 12px 30px;text-align:center}
+#welcome .welcome-image{position:relative;width:100%}
 #welcome img{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--border)}
+#welcome .hotspot{position:absolute;display:block;border-radius:14px;background:transparent;border:0;cursor:pointer}
+#welcome .h-trame{left:2.8%;top:36.2%;width:46.8%;height:12.8%}.h-socle1{left:51%;top:36.2%;width:46.3%;height:12.8%}.h-themes{left:2.8%;top:49.6%;width:46.8%;height:11.7%}.h-orales{left:51%;top:49.6%;width:46.3%;height:11.7%}.h-ecrites{left:2.8%;top:62%;width:46.8%;height:12.1%}.h-socle2{left:51%;top:62%;width:46.3%;height:12.1%}.h-examen{left:2.8%;top:75.4%;width:46.8%;height:14.6%}.h-pistes{left:51%;top:75.4%;width:46.3%;height:14.6%}
 #welcome .enter{margin:14px auto 0;border:0;border-radius:14px;background:var(--accent);color:#fff;padding:15px 24px;font:inherit;font-weight:850;font-size:18px;cursor:pointer;min-width:220px}
 #welcome .enter:focus{outline:3px solid #8cc8ef;outline-offset:3px}
 </style>
 </head>
 <body>
 <section id="welcome">
-<img src="assets/accueil-permis-c.png" alt="Page d’accueil Révisions Permis C">
-<button class="enter" id="enterSite" type="button">ENTRER DANS LES RÉVISIONS →</button>
+<div class="welcome-image"><img src="assets/accueil-permis-c.png" alt="Page d’accueil Révisions Permis C"><a class="hotspot h-trame" href="trame-inspecteur-officielle-c.pdf" target="_blank" aria-label="Trame officielle"></a><a class="hotspot h-socle1" href="socle-1-interactif-v11.html" aria-label="Socle 1 interactif"></a><button class="hotspot h-themes" type="button" data-open="themes" aria-label="Thèmes"></button><button class="hotspot h-orales" type="button" data-open="orales" aria-label="Fiches orales"></button><button class="hotspot h-ecrites" type="button" data-open="ecrites" aria-label="Fiches écrites"></button><button class="hotspot h-socle2" type="button" data-open="socle2" aria-label="Socle 2"></button><button class="hotspot h-examen" type="button" data-open="examen" aria-label="Examen blanc"></button><a class="hotspot h-pistes" href="manoeuvre-c.html" aria-label="Pistes examen"></a></div>
 </section>
 <main id="siteMain" class="hidden">
 <h1>🚛 Permis C — Révisions plateau</h1><p class="sub">Support stagiaire interactif — Procédure examen plateau</p>
@@ -70,7 +72,7 @@ main{max-width:850px;margin:auto;padding:20px 14px 50px}h1{font-size:28px;margin
 </section>
 </main>
 <script>
-document.getElementById('enterSite').addEventListener('click',()=>{document.getElementById('welcome').classList.add('hidden');document.getElementById('siteMain').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});});
+function showExistingMenu(target){document.getElementById('welcome').classList.add('hidden');document.getElementById('siteMain').classList.remove('hidden');const zones=[...document.querySelectorAll('#home .written-zone,#home .oral-zone')];let el=null;if(target==='ecrites')el=zones.find(z=>z.textContent.includes('FICHES ÉCRITES'));if(target==='themes')el=zones.find(z=>z.textContent.includes('THÈMES'));if(target==='orales')el=document.querySelector('#home .oral-zone');if(target==='socle2')el=zones.find(z=>z.textContent.includes('SOCLE 2'));if(target==='examen'){alert('Examen blanc : rubrique prévue pour la suite.');document.getElementById('welcome').classList.remove('hidden');document.getElementById('siteMain').classList.add('hidden');return;}if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else window.scrollTo({top:0,behavior:'smooth'});}document.querySelectorAll('#welcome [data-open]').forEach(b=>b.addEventListener('click',()=>showExistingMenu(b.dataset.open)));
 const A=(t,d=[],s=[],n='')=>({t,d,s,n}),S=(t,x,m='')=>({t,x,m});
 const D=[
 S('SOCLE 1 — Vérifications courantes de sécurité',[
