@@ -21,9 +21,19 @@ main{max-width:850px;margin:auto;padding:20px 14px 50px}h1{font-size:28px;margin
 .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.section{font-size:14px;color:var(--muted)}h2{font-size:23px;margin:3px 0 15px}.count{white-space:nowrap;background:var(--panel);padding:6px 10px;border-radius:99px;font-weight:750}
 .memo,.note{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:15px}.group{margin:18px 0}.group h3{font-size:17px;margin:0 0 9px}.step{display:flex;gap:10px;background:var(--panel);border-radius:10px;padding:12px;margin:8px 0}.say{background:var(--accentbg);border-left:4px solid var(--accent);border-radius:8px;padding:12px;margin:8px 0;font-weight:700}.progress{height:8px;background:#e1e5ec;border-radius:99px;overflow:hidden;margin-top:22px}.bar{height:100%;background:var(--accent)}
 @media(max-width:600px){.menu{grid-template-columns:1fr}h1{font-size:24px}.top{align-items:flex-start}main{padding-top:15px}}
+
+#welcome{max-width:850px;margin:0 auto;padding:12px 12px 30px;text-align:center}
+#welcome img{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--border)}
+#welcome .enter{margin:14px auto 0;border:0;border-radius:14px;background:var(--accent);color:#fff;padding:15px 24px;font:inherit;font-weight:850;font-size:18px;cursor:pointer;min-width:220px}
+#welcome .enter:focus{outline:3px solid #8cc8ef;outline-offset:3px}
 </style>
 </head>
-<body><main>
+<body>
+<section id="welcome">
+<img src="assets/accueil-permis-c.png" alt="Page d’accueil Révisions Permis C">
+<button class="enter" id="enterSite" type="button">ENTRER DANS LES RÉVISIONS →</button>
+</section>
+<main id="siteMain" class="hidden">
 <h1>🚛 Permis C — Révisions plateau</h1><p class="sub">Support stagiaire interactif — Procédure examen plateau</p>
 <section id="home">
 <div class="written-zone" style="margin-top:0;padding-top:0;border-top:0">
@@ -60,6 +70,7 @@ main{max-width:850px;margin:auto;padding:20px 14px 50px}h1{font-size:28px;margin
 </section>
 </main>
 <script>
+document.getElementById('enterSite').addEventListener('click',()=>{document.getElementById('welcome').classList.add('hidden');document.getElementById('siteMain').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});});
 const A=(t,d=[],s=[],n='')=>({t,d,s,n}),S=(t,x,m='')=>({t,x,m});
 const D=[
 S('SOCLE 1 — Vérifications courantes de sécurité',[
