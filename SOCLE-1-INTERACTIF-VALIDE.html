@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Permis C — Socle 1 interactif V6</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#dfeaf5;font-family:Arial,Helvetica,sans-serif}
+.stage{position:relative;max-width:1536px;margin:0 auto;background:#fff;overflow:hidden}
+.stage img{display:block;width:100%;height:auto}
+.hidden{display:none}
+.hit{position:absolute;z-index:10;border:0;background:transparent;cursor:pointer;border-radius:10px}
+.hit.selected{outline:5px solid #18a63b;outline-offset:-5px;background:rgba(24,166,59,.08)}
+.ring{display:none;position:absolute;z-index:11;border:5px solid #18a63b;border-radius:50%;pointer-events:none;box-shadow:0 0 0 3px rgba(255,255,255,.8)}
+.ring.show{display:block}
+.answer{display:none;position:absolute;z-index:20;left:4%;right:4%;bottom:8.7%;background:#fff;border:4px solid #0878d1;border-radius:18px;padding:18px 60px 18px 20px;color:#073b72;font-size:clamp(16px,2vw,28px);font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.answer.show{display:block;left:1.5%;right:1.5%;bottom:5.5%;padding:24px 68px 24px 26px;font-size:clamp(20px,2.5vw,36px);min-height:92px;align-items:center}
+.close{position:absolute;right:12px;top:10px;width:40px;height:40px;border:0;border-radius:50%;font-size:25px;cursor:pointer}
+.navhit{position:absolute;z-index:12;border:0;background:transparent;cursor:pointer;border-radius:18px}
+@media(max-width:600px){.answer{bottom:10%;font-size:15px;padding:12px 48px 12px 14px;border-width:3px}.answer.show{left:2%;right:2%;bottom:9%;font-size:18px;padding:16px 52px 16px 16px;min-height:76px}.ring{border-width:3px}}
+</style>
+<style>
+.navbar-extra{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;background:#eef6ff}
+.navbar-extra button{border:0;border-radius:14px;padding:12px 18px;font-weight:800;font-size:16px;cursor:pointer}
+.prev-extra{background:#fff;color:#07559e;border:2px solid #1685dc!important}
+.next-extra{background:#149b35;color:#fff}
+.finish-extra{background:#07559e;color:#fff}
+</style>
+<style>
+#step4{padding-bottom:88px!important}
+#step4 #back3,#step4 #to5{
+  position:absolute!important;
+  bottom:12px!important;
+  top:auto!important;
+  z-index:1000!important;
+  height:58px!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+#step4 #back3{left:14px!important;width:210px!important}
+#step4 #to5{right:14px!important;left:auto!important;width:210px!important}
+</style>
+<style>
+#step4 #back3,#step4 #to5{display:none!important}
+#step4 .nav-visible-step4{
+  display:flex!important;
+  justify-content:space-between;
+  gap:16px;
+  padding:16px 18px 22px;
+  background:#fff;
+  position:relative;
+  z-index:5000;
+}
+#step4 .nav-visible-step4 button{
+  display:block!important;
+  position:static!important;
+  width:auto!important;
+  min-width:210px;
+  height:auto!important;
+  padding:14px 20px;
+  border-radius:16px;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+}
+#step4Prev{background:#fff;color:#07559e;border:2px solid #1685dc}
+#step4Next{background:#159b37;color:#fff;border:2px solid #159b37}
+@media(max-width:650px){
+  #step4 .nav-visible-step4{padding:10px;gap:8px}
+  #step4 .nav-visible-step4 button{min-width:0;flex:1;font-size:14px;padding:12px 8px}
+}
+</style>
+<style id="photoNumberHitFix">
+/* Zones cliquables : uniquement les numéros visibles sur la grande photo. */
+.hit{border-radius:50%!important;touch-action:manipulation;-webkit-tap-highlight-color:rgba(24,166,59,.18)}
+.hit.selected{outline:4px solid #18a63b!important;outline-offset:-4px!important;background:rgba(24,166,59,.10)!important}
+</style>
+<style id="listenInstruction123">
+.listen-info{position:absolute;z-index:15;display:flex;align-items:center;justify-content:center;box-sizing:border-box;background:#eef8ff;border:2px solid #72b9f4;border-radius:14px;color:#07559e;font-weight:800;font-size:clamp(15px,1.45vw,23px);text-align:center;padding:8px 14px;pointer-events:none}
+#step1 .listen-info{left:55.2%;top:75.8%;width:42.4%;height:11.5%}
+#step2 .listen-info{left:1.6%;top:80.0%;width:96.8%;height:8.6%}
+#step3 .listen-info{left:30.0%;top:89.3%;width:45.0%;height:8.2%}
+@media(max-width:650px){.listen-info{font-size:clamp(12px,3.5vw,18px);padding:5px 8px}}
+</style>
+</head>
+<body>
+<section class="stage" id="step1">
+<div class="listen-info">Cliquez sur un numéro pour écouter.</div>
+<img alt="Permis C — Socle 1 étape 1 accès au véhicule" src="assets/socle1/socle1-59a6bf1738.png"/>
+<!-- clic sur les 3 vignettes du bas -->
+<button aria-label="1 Ouvrir la porte" class="hit item1" data-n="1" data-text="Je vérifie que la porte s’ouvre correctement et je l’ouvre." style="left:26.35%;top:27.13%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 1"></button>
+<button aria-label="2 Monter dans le véhicule" class="hit item1" data-n="2" data-text="Je monte dans le véhicule en utilisant les 3 points d’appui." style="left:60.66%;top:26.45%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 2"></button>
+<button aria-label="3 Trois points d'appui" class="hit item1" data-n="3" data-text="Une main sur la poignée extérieure. Une main sur la poignée intérieure. Un pied sur le marchepied. 3 points d’appui = sécurité !" style="left:41.78%;top:61.12%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 3"></button>
+<!-- cercles verts autour des numéros sur la grande photo -->
+<div class="ring" id="s1r1" style="left:27.8%;top:29.0%;width:4.4%;aspect-ratio:1"></div>
+<div class="ring" id="s1r2" style="left:61.9%;top:28.4%;width:4.4%;aspect-ratio:1"></div>
+<div class="ring" id="s1r3" style="left:43.2%;top:63.3%;width:4.4%;aspect-ratio:1"></div>
+<button aria-label="Étape suivante" class="navhit" id="to2" style="right:1.5%;bottom:1.4%;width:20%;height:8.5%"></button>
+<div class="answer"><button class="close" type="button">×</button><span></span></div>
+</section>
+<section class="stage hidden" id="step2">
+<div class="listen-info">Cliquez sur un numéro pour écouter.</div>
+<img alt="Permis C — Socle 1 étape 2 intérieur du véhicule" src="assets/socle1/socle1-69a41fe2bc.png"/>
+<!-- clic sur les 7 vignettes du bas -->
+<button aria-label="1 Porte et vitre" class="hit item2" data-n="1" data-text="Je ferme la porte et je baisse la vitre." style="left:4.21%;top:22.35%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 1"></button>
+<button aria-label="2 Contact" class="hit item2" data-n="2" data-text="Bouton poussoir : j’appuie 1 fois : allume les accessoires. J’appuie 2 fois : met le contact." style="left:33.18%;top:48.03%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 2"></button>
+<button aria-label="3 Voyant de frein de parc" class="hit item2" data-n="3" data-text="Voyant de frein de parc allumé." style="left:30.51%;top:22.35%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 3"></button>
+<button aria-label="4 Frein de parc" class="hit item2" data-n="4" data-text="Frein de parc enclenché, véhicule immobilisé." style="left:77.98%;top:28.40%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 4"></button>
+<button aria-label="5 Documents de bord" class="hit item2" data-n="5" data-text="Je suis en présence de mes documents de bord." style="left:84.81%;top:12.29%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 5"></button>
+<button aria-label="6 Cabine verrouillée" class="hit item2" data-n="6" data-text="Je n'ai pas de voyant de cabine allumé, donc la cabine est bien verrouillée." style="left:60.72%;top:25.18%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 6"></button>
+<button aria-label="7 Feux" class="hit item2" data-n="7" data-text="J’allume les feux de croisement et les feux de détresse." style="left:14.24%;top:41.39%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 7"></button><button aria-label="7 Feux" class="hit item2" data-n="7" data-text="J’allume les feux de croisement et les feux de détresse." style="left:78.43%;top:46.96%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 7"></button>
+<!-- cercles verts autour des numéros de la grande photo -->
+<div class="ring" id="s2r1" style="left:5.7%;top:23.7%;width:4.0%;aspect-ratio:1"></div>
+<div class="ring" id="s2r2" style="left:34.7%;top:50.5%;width:4.0%;aspect-ratio:1"></div>
+<div class="ring" id="s2r3" style="left:32.0%;top:23.7%;width:4.0%;aspect-ratio:1"></div>
+<div class="ring" id="s2r4" style="left:79.3%;top:29.5%;width:4.0%;aspect-ratio:1"></div>
+<div class="ring" id="s2r5" style="left:85.9%;top:14.1%;width:4.0%;aspect-ratio:1"></div>
+<div class="ring" id="s2r6" style="left:62.0%;top:26.5%;width:4.0%;aspect-ratio:1"></div>
+<div class="ring" id="s2r7a" style="left:15.8%;top:42.7%;width:4.0%;aspect-ratio:1"></div>
+<div class="ring" id="s2r7b" style="left:79.8%;top:48.2%;width:4.0%;aspect-ratio:1"></div>
+<button aria-label="Étape précédente" class="navhit" id="back1" style="left:1.5%;bottom:1.4%;width:20%;height:8.5%"></button>
+<button aria-label="Étape suivante" class="navhit" id="to3" style="right:1.5%;bottom:1.4%;width:20%;height:8.5%"></button>
+<div class="answer"><button class="close" type="button">×</button><span></span></div>
+</section>
+<section class="stage hidden" id="step3">
+<div class="listen-info">Cliquez sur un numéro pour écouter.</div>
+<img alt="Permis C — Socle 1 étape 3 avant du véhicule" src="assets/socle1/socle1-65779d6c84.png"/>
+<button aria-label="1 Feux de gabarit" class="hit item3" data-n="1" data-text="Mes feux de gabarit en haut, pas d’anomalie." style="left:13.98%;top:10.83%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 1"></button><button aria-label="1 Feux de gabarit" class="hit item3" data-n="1" data-text="Mes feux de gabarit en haut, pas d’anomalie." style="left:38.07%;top:10.83%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 1"></button>
+<button aria-label="2 Carrosserie" class="hit item3" data-n="2" data-text="Ma carrosserie, pas d’anomalie." style="left:25.70%;top:13.85%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 2"></button>
+<button aria-label="3 Pare-brise" class="hit item3" data-n="3" data-text="Mon pare-brise, pas d’anomalie." style="left:25.76%;top:27.43%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 3"></button>
+<button aria-label="4 Glace d'antéviseur" class="hit item3" data-n="4" data-text="Ma glace d’antéviseur, pas d’anomalie." style="left:20.55%;top:22.54%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 4"></button>
+<button aria-label="5 Feux de croisement" class="hit item3" data-n="5" data-text="Mes feux de croisement, pas d’anomalie." style="left:11.24%;top:52.13%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 5"></button><button aria-label="5 Feux de croisement" class="hit item3" data-n="5" data-text="Mes feux de croisement, pas d’anomalie." style="left:39.89%;top:52.13%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 5"></button>
+<button aria-label="6 Feux de détresse" class="hit item3" data-n="6" data-text="Mes feux de détresse, pas d’anomalie." style="left:8.77%;top:58.29%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 6"></button><button aria-label="6 Feux de détresse" class="hit item3" data-n="6" data-text="Mes feux de détresse, pas d’anomalie." style="left:42.36%;top:58.29%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 6"></button>
+<button aria-label="7 Sous le véhicule" class="hit item3" data-n="7" data-text="Je me baisse, dos droit. Pas de tache sous le véhicule." style="left:25.76%;top:66.68%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 7"></button>
+<div class="ring" id="s3r1a" style="left:15.4%;top:12.5%;width:3.8%;aspect-ratio:1"></div>
+<div class="ring" id="s3r1b" style="left:39.5%;top:12.5%;width:3.8%;aspect-ratio:1"></div>
+<div class="ring" id="s3r2" style="left:27.5%;top:15.5%;width:3.8%;aspect-ratio:1"></div>
+<div class="ring" id="s3r3" style="left:27.5%;top:29.5%;width:3.8%;aspect-ratio:1"></div>
+<div class="ring" id="s3r4" style="left:22.5%;top:24.0%;width:3.8%;aspect-ratio:1"></div>
+<div class="ring" id="s3r5a" style="left:13.8%;top:52.5%;width:3.8%;aspect-ratio:1"></div>
+<div class="ring" id="s3r5b" style="left:40.5%;top:52.5%;width:3.8%;aspect-ratio:1"></div>
+<div class="ring" id="s3r6a" style="left:11.2%;top:58.3%;width:3.8%;aspect-ratio:1"></div>
+<div class="ring" id="s3r6b" style="left:43.0%;top:58.3%;width:3.8%;aspect-ratio:1"></div>
+<div class="ring" id="s3r7" style="left:27.5%;top:66.5%;width:3.8%;aspect-ratio:1"></div>
+<button aria-label="Étape précédente" class="navhit" id="back2" style="left:1.5%;bottom:1.4%;width:20%;height:8.5%"></button>
+<button aria-label="Étape suivante" class="navhit" id="to4" style="right:1.5%;bottom:1.4%;width:20%;height:8.5%"></button>
+<div class="answer"><button class="close" type="button">×</button><span></span></div>
+</section>
+<section class="stage hidden" id="step4">
+<img alt="Permis C — Socle 1 étape 4 côté cabine et carrosserie" src="assets/socle1/socle1-1c85a0e280.png"/>
+<button aria-label="1 Carrosserie" class="hit item4" data-n="1" data-text="Ma carrosserie, pas d’anomalie." style="left:57.30%;top:10.55%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 1"></button>
+<button aria-label="2 Vitres latérales" class="hit item4" data-n="2" data-text="Mes vitres latérales, pas d’anomalie." style="left:66.40%;top:24.85%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 2"></button>
+<button aria-label="3 Glaces de rétroviseur" class="hit item4" data-n="3" data-text="Mes glaces de rétroviseur, pas d’anomalie." style="left:74.20%;top:22.95%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 3"></button>
+<button aria-label="4 Répétiteur de feux de détresse" class="hit item4" data-n="4" data-text="Mon répétiteur de feux de détresse, pas d’anomalie." style="left:77.20%;top:60.35%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 4"></button>
+<button aria-label="5 Roue avant" class="hit item4" data-n="5" data-text="Ma roue, pas d’anomalie." style="left:62.70%;top:71.65%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 5"></button>
+<button aria-label="6 Plaque de tare" class="hit item4" data-n="6" data-text="Ma plaque de tare avec un PTAC de … tonnes, d’une longueur de … mètres, d’une largeur de … mètres et d’une hauteur de … mètres." style="left:56.30%;top:38.05%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 6"></button>
+<button aria-label="7 Carrosserie et bâche" class="hit item4" data-n="7" data-text="Ma carrosserie, ma bâche, pas d’anomalie." style="left:25.40%;top:27.05%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 7"></button>
+<button aria-label="8 Sangles et cliquets" class="hit item4" data-n="8" data-text="Mes sangles et cliquets, pas d’anomalie." style="left:24.40%;top:46.45%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 8"></button>
+<button aria-label="9 Feux orangés" class="hit item4" data-n="9" data-text="Mes feux orangés, pas d’anomalie." style="left:41.90%;top:56.75%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 9"></button>
+<button aria-label="10 Roue arrière" class="hit item4" data-n="10" data-text="Ma roue, pas d’anomalie." style="left:11.40%;top:63.55%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 10"></button>
+<button aria-label="Étape précédente" class="navhit" id="back3" style="left:1.5%;bottom:1.4%;width:20%;height:8.5%"></button>
+<button aria-label="Étape suivante" class="navhit" id="to5" style="right:1.5%;bottom:1.4%;width:20%;height:8.5%"></button>
+<div class="answer"><button class="close" type="button">×</button><span></span></div>
+<div class="nav-visible-step4">
+<button id="step4Prev" type="button">← Étape précédente</button>
+<button id="step4Next" type="button">Étape suivante →</button>
+</div>
+</section>
+<section class="stage hidden" id="step5">
+<img alt="Permis C — Socle 1 arrière du véhicule" src="assets/socle1/socle1-7bd74f9067.png"/>
+<button aria-label="1 Feux de gabarit haut et bas" class="hit item5" data-n="1" data-text="Mes feux de gabarit haut et bas : pas d’anomalie." style="left:0.50%;top:5.06%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 1"></button><button aria-label="1 Feux de gabarit haut et bas" class="hit item5" data-n="1" data-text="Mes feux de gabarit haut et bas : pas d’anomalie." style="left:-0.02%;top:44.32%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 1"></button>
+<button aria-label="2 Carrosserie" class="hit item5" data-n="2" data-text="Ma carrosserie : pas d’anomalie." style="left:12.87%;top:25.18%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 2"></button>
+<button aria-label="3 Chargement" class="hit item5" data-n="3" data-text="Je vérifie mon chargement. Chargement : pas d’anomalie." style="left:32.73%;top:23.72%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 3"></button>
+<button aria-label="4 Feux de détresse" class="hit item5" data-n="4" data-text="Mes feux de détresse : pas d’anomalie." style="left:91.58%;top:44.22%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 4"></button>
+<button aria-label="5 Feux rouges" class="hit item5" data-n="5" data-text="Mes feux rouges : pas d’anomalie." style="left:76.87%;top:4.58%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 5"></button>
+<button aria-label="6 Essai des feux stop" class="hit item5" data-n="6" data-text="Je sollicite l’aide de l’inspecteur pour vérifier les feux stop. Je retire les gants. Je monte dans le véhicule. Je ferme la porte. Je baisse la vitre. J’appuie sur le frein de service. Je crie TEST ou ESSAI. Je remonte la vitre. Je descends du véhicule, je ferme la porte et je remets les gants." style="left:66.97%;top:52.52%;width:7.20%;height:9.60%" title="Cliquez sur le numéro 6"></button>
+<div class="answer"><button class="close" type="button">×</button><span></span></div>
+<div class="navbar-extra">
+<button class="prev-extra" id="back4">← Étape précédente</button>
+<button class="next-extra" id="to6">Étape suivante →</button>
+</div>
+</section>
+<section class="stage hidden" id="step6">
+<img alt="Permis C — Socle 1 côté conducteur" src="assets/socle1/socle1-ec4308f445.png"/>
+<button aria-label="1 Carrosserie bâche" class="hit item6" data-n="1" data-text="Ma carrosserie, ma bâche." style="left:89.20%;top:24.05%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 1"></button>
+<button aria-label="2 Sangles cliquets" class="hit item6" data-n="2" data-text="Mes sangles, mes cliquets." style="left:60.70%;top:45.45%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 2"></button>
+<button aria-label="3 Roue arrière" class="hit item6" data-n="3" data-text="Ma roue." style="left:79.20%;top:61.25%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 3"></button>
+<button aria-label="4 Feux orangés" class="hit item6" data-n="4" data-text="Mes feux orangés : pas d’anomalie." style="left:45.50%;top:58.65%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 4"></button>
+<button aria-label="5 Carrosserie cabine" class="hit item6" data-n="5" data-text="Ma carrosserie." style="left:27.50%;top:38.25%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 5"></button>
+<button aria-label="6 Vitres latérales" class="hit item6" data-n="6" data-text="Mes vitres latérales." style="left:26.00%;top:23.65%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 6"></button>
+<button aria-label="7 Glaces de rétroviseurs" class="hit item6" data-n="7" data-text="Mes glaces de rétroviseurs." style="left:19.50%;top:24.45%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 7"></button>
+<button aria-label="8 Répétiteur feux de détresse" class="hit item6" data-n="8" data-text="Mon répétiteur de feux de détresse." style="left:19.50%;top:54.95%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 8"></button>
+<button aria-label="9 Roue avant" class="hit item6" data-n="9" data-text="Ma roue : pas d’anomalie. Socle 1 terminé." style="left:30.80%;top:70.65%;width:6.20%;height:8.30%" title="Cliquez sur le numéro 9"></button>
+<div class="answer"><button class="close" type="button">×</button><span></span></div>
+<div class="navbar-extra">
+<button class="prev-extra" id="back5">← Étape précédente</button>
+<button class="finish-extra" id="finish">Socle 1 terminé ✓</button>
+</div>
+</section>
+<script>
+const s1=document.getElementById('step1'),s2=document.getElementById('step2');
+function reset(stage){
+  stage.querySelectorAll('.hit').forEach(x=>x.classList.remove('selected'));
+  stage.querySelectorAll('.ring').forEach(x=>x.classList.remove('show'));
+  stage.querySelector('.answer').classList.remove('show');
+}
+function activate(btn,stage,prefix){
+  /* Étapes 1 et 2 : le clic sert uniquement à la lecture vocale.
+     Aucun texte, aucune vignette et aucune sélection visuelle ne s'affichent. */
+  reset(stage);
+}
+document.querySelectorAll('.item1').forEach(b=>b.addEventListener('click',()=>activate(b,s1,'s1')));
+document.querySelectorAll('.item2').forEach(b=>b.addEventListener('click',()=>activate(b,s2,'s2')));
+document.querySelectorAll('.close').forEach(b=>b.addEventListener('click',()=>reset(b.closest('.stage'))));
+document.getElementById('to2').addEventListener('click',()=>{reset(s1);s1.classList.add('hidden');s2.classList.remove('hidden');scrollTo(0,0)});
+document.getElementById('back1').addEventListener('click',()=>{naturalSpeechCancel();window.location.href='SOCLE-1-ECRIT-source-index.html';});
+document.getElementById('to3').addEventListener('click',()=>{reset(s2);s2.classList.add('hidden');document.getElementById('step3').classList.remove('hidden');scrollTo(0,0);setTimeout(()=>alert('Consigne : je mets mes gants avant de commencer la vérification extérieure.'),50)});
+const s3=document.getElementById('step3');
+document.querySelectorAll('.item3').forEach(b=>b.addEventListener('click',()=>{
+  /* Étape 3 : le clic sert uniquement à la lecture vocale. */
+  reset(s3);
+}));
+document.getElementById('back2').addEventListener('click',()=>{reset(s3);s3.classList.add('hidden');s2.classList.remove('hidden');scrollTo(0,0)});
+document.getElementById('to4').addEventListener('click',()=>{reset(s3);s3.classList.add('hidden');document.getElementById('step4').classList.remove('hidden');scrollTo(0,0)});
+const s4=document.getElementById('step4');
+document.querySelectorAll('.item4').forEach(b=>b.addEventListener('click',()=>{
+  const box=s4.querySelector('.answer'), span=box.querySelector('span');
+  const was=b.classList.contains('selected'); reset(s4); if(was)return;
+  b.classList.add('selected'); span.textContent=b.dataset.text; box.classList.add('show');
+}));
+document.getElementById('back3').addEventListener('click',()=>{reset(s4);s4.classList.add('hidden');s3.classList.remove('hidden');scrollTo(0,0)});
+document.getElementById('to5').addEventListener('click',()=>{reset(s4);s4.classList.add('hidden');document.getElementById('step5').classList.remove('hidden');scrollTo(0,0)});
+
+function speakValidated(text){naturalSpeak(text,0.82)}
+document.querySelectorAll('.hit').forEach(b=>{
+  b.addEventListener('click',()=>speakValidated(b.dataset.text));
+});
+
+const s5=document.getElementById('step5'), s6=document.getElementById('step6');
+document.querySelectorAll('.item5').forEach(b=>b.addEventListener('click',()=>{
+  const box=s5.querySelector('.answer'), span=box.querySelector('span');
+  const was=b.classList.contains('selected'); reset(s5); if(was)return;
+  b.classList.add('selected'); span.textContent=b.dataset.text; box.classList.add('show');
+}));
+document.querySelectorAll('.item6').forEach(b=>b.addEventListener('click',()=>{
+  const box=s6.querySelector('.answer'), span=box.querySelector('span');
+  const was=b.classList.contains('selected'); reset(s6); if(was)return;
+  b.classList.add('selected'); span.textContent=b.dataset.text; box.classList.add('show');
+}));
+document.getElementById('back4').addEventListener('click',()=>{naturalSpeechCancel();reset(s5);s5.classList.add('hidden');s4.classList.remove('hidden');scrollTo(0,0)});
+document.getElementById('to6').addEventListener('click',()=>{naturalSpeechCancel();reset(s5);s5.classList.add('hidden');s6.classList.remove('hidden');scrollTo(0,0)});
+document.getElementById('back5').addEventListener('click',()=>{naturalSpeechCancel();reset(s6);s6.classList.add('hidden');s5.classList.remove('hidden');scrollTo(0,0)});
+document.getElementById('finish').addEventListener('click',()=>{naturalSpeechCancel();alert('Socle 1 terminé.')});
+
+
+document.getElementById('step4Prev').addEventListener('click',()=>{
+  naturalSpeechCancel(); reset(s4); s4.classList.add('hidden'); s3.classList.remove('hidden'); scrollTo(0,0);
+});
+document.getElementById('step4Next').addEventListener('click',()=>{
+  naturalSpeechCancel(); reset(s4); s4.classList.add('hidden'); document.getElementById('step5').classList.remove('hidden'); scrollTo(0,0);
+});
+
+</script>
+<script>
+/* Lecture vocale naturelle : conserve la ponctuation et marque les pauses. */
+window.__speechToken = 0;
+window.__speechTimer = null;
+window.__speechPaused = false;
+window.__speechPausedBetweenChunks = false;
+window.__speechNext = null;
+window.__nativeSpeechCancel = window.speechSynthesis && window.speechSynthesis.cancel ? window.speechSynthesis.cancel.bind(window.speechSynthesis) : function(){};
+function naturalSpeechCancel(){
+  window.__speechToken++;
+  window.__speechPaused=false; window.__speechPausedBetweenChunks=false; window.__speechNext=null;
+  if(window.__speechTimer){ clearTimeout(window.__speechTimer); window.__speechTimer=null; }
+  window.__nativeSpeechCancel();
+}
+function naturalSpeechPause(){
+  window.__speechPaused = true;
+  if(window.__speechTimer){ clearTimeout(window.__speechTimer); window.__speechTimer=null; window.__speechPausedBetweenChunks=true; }
+  try{ window.speechSynthesis.pause(); }catch(e){}
+}
+function naturalSpeechResume(){
+  if(!window.__speechPaused) return;
+  window.__speechPaused = false;
+  try{ window.speechSynthesis.resume(); }catch(e){}
+  if(window.__speechPausedBetweenChunks && typeof window.__speechNext === 'function'){
+    window.__speechPausedBetweenChunks=false;
+    window.__speechNext();
+  }
+}
+function naturalSpeak(text, rate){
+  if(!('speechSynthesis' in window) || !text) return;
+  naturalSpeechCancel();
+  const token=window.__speechToken;
+  const source=String(text).replace(/\r/g,'').replace(/[•→←✓]/g,' ').replace(/[ \t]+/g,' ').trim();
+  const parts=[];
+  source.split(/\n+/).forEach((line,li,arr)=>{
+    const s=line.trim(); if(!s) return;
+    const re=/([^,;:.!?…]+[,;:.!?…]?)/g; let m;
+    while((m=re.exec(s))){
+      const chunk=m[1].trim(); if(!chunk) continue;
+      const last=chunk.slice(-1); let pause=180;
+      if(last===',') pause=280;
+      else if(last===';' || last===':') pause=450;
+      else if('.!?…'.includes(last)) pause=650;
+      parts.push({text:chunk,pause:pause});
+    }
+    if(li<arr.length-1 && parts.length) parts[parts.length-1].pause=Math.max(parts[parts.length-1].pause,850);
+  });
+  if(!parts.length) parts.push({text:source,pause:0});
+  let i=0;
+  function next(){
+    window.__speechNext=next;
+    if(token!==window.__speechToken || i>=parts.length) return;
+    if(window.__speechPaused){ window.__speechPausedBetweenChunks=true; return; }
+    const p=parts[i++];
+    const u=new SpeechSynthesisUtterance(p.text);
+    u.lang='fr-FR'; u.rate=rate||0.82; u.pitch=1; u.volume=1;
+    u.onend=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,p.pause); };
+    u.onerror=()=>{ if(token===window.__speechToken) window.__speechTimer=setTimeout(next,120); };
+    window.speechSynthesis.speak(u);
+  }
+  next();
+}
+</script>
+<style id="voiceUniversalStyle">
+#voiceUniversalControls{position:fixed;right:12px;top:12px;z-index:99999;display:flex;gap:7px;flex-wrap:wrap;background:rgba(255,255,255,.96);padding:8px;border-radius:12px;box-shadow:0 3px 14px #0003;font-family:Arial,sans-serif}
+#voiceUniversalControls button{border:0;border-radius:9px;padding:10px 12px;font-weight:700;cursor:pointer;font-size:14px}
+#voicePauseBtn{background:#ffd76a;color:#3c3100}#voiceResumeBtn{background:#dcecff;color:#064f91}#voiceStopBtn{background:#e85d5d;color:white}
+@media(max-width:520px){#voiceUniversalControls{left:8px;right:8px;top:8px;bottom:auto;justify-content:center}#voiceUniversalControls button{flex:1;padding:11px 7px}}
+</style>
+<div aria-label="Commandes de lecture vocale" id="voiceUniversalControls">
+<button id="voiceStopBtn" onclick="naturalSpeechCancel()" type="button">⏹ Arrêt</button>
+</div>
+<script id="voiceStopOnPageExit">
+/* Arrête immédiatement la lecture vocale dès que l'utilisateur quitte cette page. */
+(function(){
+  function stopVoiceOnExit(){
+    try { if (typeof naturalSpeechCancel === 'function') naturalSpeechCancel(); } catch(e) {}
+    try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e) {}
+  }
+  window.addEventListener('pagehide', stopVoiceOnExit);
+  window.addEventListener('beforeunload', stopVoiceOnExit);
+  document.addEventListener('click', function(e){
+    var a=e.target.closest && e.target.closest('a[href]');
+    if(a && !a.hasAttribute('download') && (a.target||'_self') === '_self') stopVoiceOnExit();
+  }, true);
+})();
+</script>
+
+<script id="socleStopVoiceOnNumberChange">
+/* Un nouveau numéro coupe toujours la lecture précédente avant de lancer la nouvelle. */
+document.addEventListener('click', function(e){
+  var hit=e.target.closest && e.target.closest('.hit');
+  if(hit && typeof naturalSpeechCancel==='function') naturalSpeechCancel();
+}, true);
+</script>
+<script id="socleStopVoiceOnInternalNavigation">
+/* Une étape/page du Socle 1 ne doit jamais conserver la lecture de l'étape précédente. */
+document.addEventListener('click', function(e){
+  var nav=e.target.closest && e.target.closest('.navhit, .navbar-extra button, .nav-visible-step4 button, #finish');
+  if(nav && typeof naturalSpeechCancel==='function') naturalSpeechCancel();
+}, true);
+</script>
+
+
+<style id="exactStage46HitStyle">
+/* Étapes 4 et 6 : zones tactiles centrées exactement sur les ronds numérotés de la photo. */
+#step4 .hit,#step6 .hit{width:6.4%!important;height:auto!important;aspect-ratio:1/1!important;transform:translate(-50%,-50%)!important;transform-origin:center!important;border-radius:50%!important;z-index:50!important;}
+</style>
+<script id="exactStage46HitScript">
+(function(){
+ const coords={
+  step4:{1:[60.32,21.62],2:[69.55,34.56],3:[77.24,32.48],4:[80.29,65.90],5:[65.72,75.67],6:[59.30,45.97],7:[28.43,36.31],8:[27.40,53.52],9:[44.95,62.67],10:[14.31,68.42]},
+  step6:{1:[92.29,32.10],2:[63.73,51.08],3:[82.18,65.20],4:[48.52,62.75],5:[30.51,44.73],6:[29.06,31.61],7:[22.60,32.47],8:[22.70,59.46],9:[33.72,73.01]}
+ };
+ function place(stage){
+   const img=stage.querySelector(':scope > img'); if(!img || !img.clientHeight) return;
+   const map=coords[stage.id];
+   stage.querySelectorAll('.hit').forEach(hit=>{
+     const p=map[hit.dataset.n]; if(!p)return;
+     hit.style.setProperty('left',p[0]+'%','important');
+     hit.style.setProperty('top',(img.offsetTop + img.clientHeight*p[1]/100)+'px','important');
+   });
+ }
+ function placeAll(){place(document.getElementById('step4'));place(document.getElementById('step6'));}
+ window.addEventListener('load',placeAll); window.addEventListener('resize',placeAll);
+ ['step4','step6'].forEach(id=>{const s=document.getElementById(id);if(!s)return;new MutationObserver(()=>requestAnimationFrame(()=>place(s))).observe(s,{attributes:true,attributeFilter:['class']});});
+ document.addEventListener('click',e=>{if(e.target.closest('.navhit,.navbar-extra button,.nav-visible-step4 button')) requestAnimationFrame(placeAll);},true);
+ requestAnimationFrame(placeAll);
+})();
+</script>
+
+
+</body></html>
