@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>THÈME 4 INTERACTIF — Roue, direction, suspension</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f7fa;color:#172033}
+main{max-width:900px;margin:auto;padding:16px 12px 42px} h1{font-size:25px;margin:0 0 5px} .sub{color:#667085;margin:0 0 15px}
+.interactive-photo{position:relative;margin:12px 0}.interactive-photo .photo{margin:0}.hotspot{position:absolute;width:9%;aspect-ratio:1;border:0;border-radius:50%;background:transparent;cursor:pointer;transform:translate(-50%,-50%)}.hotspot:focus-visible{outline:4px solid #fff;box-shadow:0 0 0 7px #1769aa}.h1{left:9.2%;top:15.4%}.h2{left:93.8%;top:32.2%}.h3{left:47.5%;top:6.3%}.h4{left:76.2%;top:49.2%}.h5{left:30.7%;top:40.7%}.h6{left:23.1%;top:65.4%}.h7{left:34.8%;top:91.7%}.h8{left:27%;top:24%}.h9{left:26%;top:24%}.dir10{position:absolute;width:8%;aspect-ratio:1;border:0;border-radius:50%;background:transparent;cursor:pointer;transform:translate(-50%,-50%)}.dir10bottom{left:5.2%;top:87.5%}.dir10:focus-visible{outline:4px solid #1769aa;outline-offset:3px}.photo{width:100%;display:block;border-radius:14px;border:1px solid #d9dee8;background:#fff;margin:12px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px} .two .photo{margin:0}
+h2{font-size:19px;margin:22px 0 10px} .hint{background:#eaf4fb;border:1px solid #9cc8e6;border-radius:10px;padding:11px;margin:12px 0;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.case{width:100%;border:1px solid #d9dee8;background:#fff;border-radius:12px;padding:11px;text-align:left;display:flex;gap:10px;align-items:flex-start;font:inherit;cursor:pointer}
+.case span{min-width:34px;height:34px;border-radius:50%;background:#1769aa;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900}
+.case b{font-size:15px;line-height:1.35} .case.active{outline:3px solid #9cc8e6;background:#eef7fd}
+#spoken{margin-top:12px;min-height:50px;background:#fff;border-left:4px solid #1769aa;border-radius:9px;padding:12px;font-weight:750}
+.top-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin:0 0 12px}.official{border:0;border-radius:10px;padding:11px 15px;background:#1769aa;color:#fff;font:inherit;font-weight:800;cursor:pointer}.official-panel{display:none;margin:14px 0 20px;background:#fff;border:1px solid #d9dee8;border-radius:14px;padding:10px}.official-panel.open{display:block}.official-panel img{width:100%;height:auto;display:block;border-radius:9px}.official-title{font-weight:900;margin:2px 2px 10px}.stop{margin-top:10px;border:0;border-radius:10px;padding:11px 15px;background:#b42318;color:white;font:inherit;font-weight:800;cursor:pointer}
+@media(max-width:650px){.grid,.two{grid-template-columns:1fr} h1{font-size:22px}}
+</style></head>
+<body><main>
+<h1>🎯 THÈME 4 INTERACTIF</h1>
+<p class="sub">Roue, direction, suspension</p>
+<div class="top-actions"><a class="official" href="theme-4-ecrit.html" style="text-decoration:none">📝 VERSION ÉCRITE</a><button class="official" type="button" id="officialBtn">📘 VERSION OFFICIELLE INSPECTEUR</button><button class="stop" type="button" id="topStop">■ ARRÊT</button></div><div class="official-panel" id="officialPanel"><div class="official-title">Thème 4 — Version officielle inspecteur</div><img src="theme4-version-officielle-inspecteur.png" alt="Thème 4 — version officielle inspecteur"></div>
+<div class="hint">Cliquez sur un numéro pour écouter.</div>
+<div class="interactive-photo" aria-label="Roue jumelée interactive numérotée de 1 à 7">
+<img class="photo" src="theme4-roue-numerotee.png" alt="Roue jumelée numérotée de 1 à 7">
+<button class="hotspot h1" type="button" aria-label="Numéro 1" onclick="speakItem(1)"></button>
+<button class="hotspot h2" type="button" aria-label="Numéro 2" onclick="speakItem(2)"></button>
+<button class="hotspot h3" type="button" aria-label="Numéro 3" onclick="speakItem(3)"></button>
+<button class="hotspot h4" type="button" aria-label="Numéro 4" onclick="speakItem(4)"></button>
+<button class="hotspot h5" type="button" aria-label="Numéro 5" onclick="speakItem(5)"></button>
+<button class="hotspot h6" type="button" aria-label="Numéro 6" onclick="speakItem(6)"></button>
+<button class="hotspot h7" type="button" aria-label="Numéro 7" onclick="speakItem(7)"></button>
+</div>
+<div class="two">
+<div class="interactive-photo"><img class="photo" src="theme4-amortisseur-8.png" alt="Amortisseur numéro 8"><button class="hotspot h8" type="button" aria-label="Numéro 8" onclick="speakItem(8)"></button></div>
+<div class="interactive-photo"><img class="photo" src="theme4-coussin-air-9.png" alt="Coussin d'air numéro 9"><button class="hotspot h9" type="button" aria-label="Numéro 9" onclick="speakItem(9)"></button></div>
+</div>
+<h2>Contrôle de la direction</h2>
+<div class="interactive-photo" aria-label="Contrôle de direction interactif numéro 10">
+<img class="photo" src="theme4-direction-10.png" alt="Contrôle de direction numéro 10">
+<button class="dir10 dir10bottom" type="button" aria-label="Numéro 10 contrôle de la direction" onclick="speakItem(10)"></button>
+</div>
+<h2>Contrôle de la roue et de la suspension</h2>
+<div class="grid"><button class="case" data-n="1" onclick="speakItem(1)"><span>1</span><b>Je suis en présence d’une roue jumelée.</b></button>
+<button class="case" data-n="2" onclick="speakItem(2)"><span>2</span><b>Mon garde-boue et ma bavette sont en bon état et bien fixés.</b></button>
+<button class="case" data-n="3" onclick="speakItem(3)"><span>3</span><b>Ma bande de roulement est en bon état.</b></button>
+<button class="case" data-n="4" onclick="speakItem(4)"><span>4</span><b>Mon flanc est en bon état, ne présente pas d’hernie ni de déchirure.</b></button>
+<button class="case" data-n="5" onclick="speakItem(5)"><span>5</span><b>Mes boulons sont tous présents et semblent bien fixés.</b></button>
+<button class="case" data-n="6" onclick="speakItem(6)"><span>6</span><b>Je n’ai pas de corps étranger à l’intérieur de mes roues jumelées.</b></button>
+<button class="case" data-n="7" onclick="speakItem(7)"><span>7</span><b>Ma pression semble bonne au vu de l’écrasement du pneu.</b></button>
+<button class="case" data-n="8" onclick="speakItem(8)"><span>8</span><b>Mon amortisseur est en bon état, il n’y a pas de tache au sol.</b></button>
+<button class="case" data-n="9" onclick="speakItem(9)"><span>9</span><b>Ma suspension ou mon coussin d’air est en bon état car je n’entends pas de fuite d’air.</b></button><button class="case" data-n="10" onclick="speakItem(10)"><span>10</span><b>Pour vérifier la direction, il existe 2 façons. Soit je bascule la cabine pour vérifier le niveau du bocal de direction. Soit j’avance de quelques mètres avec le véhicule, je tourne le volant à fond à droite puis à fond à gauche pour m’assurer que je n’ai pas de point dur ou de bruit anormaux. Thème 4 terminé.</b></button></div>
+<div id="spoken">Sélectionnez un numéro.</div>
+<button class="stop" type="button" id="bottomStop">■ ARRÊT</button>
+<script>
+const phrases={1:'Je suis en présence d’une roue jumelée.',2:'Mon garde-boue et ma bavette sont en bon état et bien fixés.',3:'Ma bande de roulement est en bon état.',4:'Mon flanc est en bon état, ne présente pas d’hernie ni de déchirure.',5:'Mes boulons sont tous présents et semblent bien fixés.',6:'Je n’ai pas de corps étranger à l’intérieur de mes roues jumelées.',7:'Ma pression semble bonne au vu de l’écrasement du pneu.',8:'Mon amortisseur est en bon état, il n’y a pas de tache au sol.',9:'Ma suspension ou mon coussin d’air est en bon état car je n’entends pas de fuite d’air.',10:'Pour vérifier la direction, il existe deux façons. Soit je bascule la cabine pour vérifier le niveau du bocal de direction. Soit j’avance de quelques mètres avec le véhicule, je tourne le volant à fond à droite puis à fond à gauche pour m’assurer que je n’ai pas de point dur ou de bruit anormaux. Thème 4 terminé.'};
+let token=0;
+let frenchVoice=null;
+function chooseFrenchVoice(){
+ if(!('speechSynthesis' in window)) return;
+ const voices=window.speechSynthesis.getVoices();
+ frenchVoice=voices.find(v=>/^fr[-_]?FR$/i.test(v.lang)) || voices.find(v=>/^fr/i.test(v.lang)) || null;
+}
+chooseFrenchVoice();
+if('speechSynthesis' in window && 'onvoiceschanged' in window.speechSynthesis){
+ window.speechSynthesis.addEventListener('voiceschanged',chooseFrenchVoice);
+}
+function stopSpeech(){
+ token++;
+ if('speechSynthesis' in window){
+   window.speechSynthesis.cancel();
+   if(window.speechSynthesis.paused) window.speechSynthesis.resume();
+ }
+}
+function speakItem(n){
+ stopSpeech();
+ document.querySelectorAll('.case').forEach(x=>x.classList.toggle('active',Number(x.dataset.n)===n));
+ document.getElementById('spoken').textContent=phrases[n];
+ if(!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance==='undefined'){
+   document.getElementById('spoken').textContent=phrases[n]+' — Lecture vocale non disponible sur ce navigateur.';
+   return;
+ }
+ chooseFrenchVoice();
+ const u=new SpeechSynthesisUtterance(phrases[n]);
+ u.lang='fr-FR';
+ u.rate=.82;
+ u.pitch=1;
+ if(frenchVoice) u.voice=frenchVoice;
+ // L'appel est déclenché directement par le clic/toucher, compatible Safari iPhone et Chrome/Android.
+ window.speechSynthesis.cancel();
+ window.speechSynthesis.speak(u);
+}
+document.getElementById('officialBtn').addEventListener('click',()=>{const p=document.getElementById('officialPanel');const open=p.classList.toggle('open');document.getElementById('officialBtn').textContent=open?'✕ FERMER VERSION OFFICIELLE':'📘 VERSION OFFICIELLE INSPECTEUR';if(open)p.scrollIntoView({behavior:'smooth',block:'start'});});
+document.getElementById('topStop').addEventListener('click',stopSpeech);
+document.getElementById('bottomStop').addEventListener('click',stopSpeech);
+window.addEventListener('pagehide',stopSpeech);
+window.addEventListener('beforeunload',stopSpeech);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech()});
+</script></main></body></html>
