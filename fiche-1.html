@@ -3,7 +3,7 @@
 .celebrate{position:fixed;inset:0;background:rgba(10,20,35,.88);z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden}.celebrate.hidden{display:none}.celebrate-card{background:white;border-radius:22px;padding:24px;width:min(86%,520px);text-align:center;position:relative;z-index:3;box-shadow:0 15px 60px #0008}.scorebig{font-size:42px;font-weight:900}.truckrun{position:absolute;left:-120px;bottom:12%;font-size:70px;animation:drive 3.2s linear forwards;z-index:2}.horn{font-size:26px;font-weight:900;animation:pop .5s ease-in-out infinite alternate}.confetti{position:absolute;top:-20px;font-size:22px;animation:fall 2.8s linear forwards}@keyframes drive{to{left:110%}}@keyframes fall{to{transform:translateY(110vh) rotate(700deg)}}@keyframes pop{from{transform:scale(.9)}to{transform:scale(1.12)}}
 </style></head><body><main>
 <h1>🚛 FICHE ORALE N°1</h1><div class="sub"><b>Conduite dans des conditions atmosphériques difficiles — Route de nuit</b></div>
-<div class="panel audio"><b>🔊 Écouter la fiche complète</b><br><button onclick="speak(full)">▶ Écouter</button><button onclick="speechSynthesis.pause()">⏸ Pause</button><button onclick="speechSynthesis.resume()">▶ Reprendre</button><button onclick="stop()">⏹ Arrêter</button></div>
+<div class="panel audio"><b>🔊 Écouter la fiche complète</b><br><button onclick="speak(full)">▶ Écouter</button><button onclick="pauseOralVoice()">⏸ Pause</button><button onclick="resumeOralVoice()">▶ Reprendre</button><button onclick="stop()">⏹ Arrêter</button></div>
 <details><summary>🌧️ Pluie</summary><div class="content">Avec un poids lourd, la pluie diminue l’adhérence et augmente les distances de freinage. La masse et le chargement imposent donc davantage d’anticipation.<br><br>
 • Réduire la vitesse et respecter la réglementation spécifique.<br>
 • Augmenter les distances de sécurité.<br>
@@ -218,5 +218,25 @@ function naturalSpeak(text, rate){
   }
   next();
 }
+</script>
+
+<script>
+(function(){
+  if (!('speechSynthesis' in window)) return;
+  window.pauseOralVoice = function(){
+    try { window.speechSynthesis.pause(); } catch(e) {}
+  };
+  window.resumeOralVoice = function(){
+    try {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        /* Mobile browsers can ignore the first resume call. */
+        setTimeout(function(){
+          try { if (window.speechSynthesis.paused) window.speechSynthesis.resume(); } catch(e) {}
+        }, 120);
+      }
+    } catch(e) {}
+  };
+})();
 </script>
 </body></html>
