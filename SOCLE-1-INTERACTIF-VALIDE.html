@@ -332,9 +332,6 @@ function naturalSpeak(text, rate){
 #voicePauseBtn{background:#ffd76a;color:#3c3100}#voiceResumeBtn{background:#dcecff;color:#064f91}#voiceStopBtn{background:#e85d5d;color:white}
 @media(max-width:520px){#voiceUniversalControls{left:8px;right:8px;top:8px;bottom:auto;justify-content:center}#voiceUniversalControls button{flex:1;padding:11px 7px}}
 </style>
-<div aria-label="Commandes de lecture vocale" id="voiceUniversalControls">
-<button id="voiceStopBtn" onclick="naturalSpeechCancel()" type="button">⏹ Arrêt</button>
-</div>
 <script id="voiceStopOnPageExit">
 /* Arrête immédiatement la lecture vocale dès que l'utilisateur quitte cette page. */
 (function(){
