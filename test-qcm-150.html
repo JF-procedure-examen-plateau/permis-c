@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test QCM — 150 questions Permis C</title>
+<style>
+:root{--b:#21357f;--bg:#f5f6f8;--ok:#16833b;--bad:#b42318;--yellow:#fff29a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#222}
+main{max-width:780px;margin:auto;padding:18px 12px 60px}h1{color:var(--b);font-size:26px;margin:8px 0}.top{background:#fff;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 2px 7px #0001}
+.progress{height:10px;background:#e3e5ea;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--b);width:0;transition:.25s}.meta{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-weight:700;color:#555}
+.card{background:#fff;border:1px solid #d5d7dd;border-radius:14px;padding:18px;box-shadow:0 2px 7px #0001}.question{font-size:21px;line-height:1.4;color:#333;font-weight:700}.sign{display:block;max-width:220px;max-height:190px;margin:14px auto}
+.choices{display:grid;gap:10px;margin-top:18px}.choice{width:100%;text-align:left;border:2px solid #d9dce5;background:#fff;border-radius:11px;padding:14px;font-size:17px;cursor:pointer;color:#222}.choice:hover{border-color:#9aa5d4}.choice:disabled{cursor:default}.choice.correct{border-color:var(--ok);background:#eaf8ef;color:#0e5f2a}.choice.wrong{border-color:var(--bad);background:#fff0ee;color:#8b1b12}
+.feedback{min-height:28px;margin-top:14px;font-size:18px;font-weight:800}.feedback.ok{color:var(--ok)}.feedback.bad{color:var(--bad)}
+.next,.restart{display:none;margin-top:12px;border:0;border-radius:10px;padding:13px 18px;background:var(--b);color:#fff;font-weight:800;font-size:16px;cursor:pointer}.next.show,.restart.show{display:inline-block}
+.celebrate{animation:pop .45s ease}@keyframes pop{0%{transform:scale(.98)}50%{transform:scale(1.015)}100%{transform:scale(1)}}.spark{position:fixed;pointer-events:none;font-size:25px;animation:fly .8s ease-out forwards}@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(180deg);opacity:0}}
+.result{text-align:center}.big{font-size:42px;font-weight:900;color:var(--b)}.small{color:#666;line-height:1.5}.loading{text-align:center;padding:35px;color:#555}
+@media(max-width:520px){.question{font-size:19px}.choice{font-size:16px;padding:13px}.meta{font-size:14px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body><main>
+<h1>📝 QCM — 150 questions</h1>
+<div class="top"><div class="progress"><div class="bar" id="bar"></div></div><div class="meta"><span id="count">Chargement…</span><span id="score">Score : 0</span></div></div>
+<div class="card" id="card"><div class="loading">Préparation des 150 questions…</div></div>
+</main>
+<script>
+const card=document.getElementById('card'),count=document.getElementById('count'),scoreEl=document.getElementById('score'),bar=document.getElementById('bar');
+let quiz=[],pos=0,score=0,locked=false;
+const clean=s=>s.replace(/\s+/g,' ').trim();
+const norm=s=>clean(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’']/g,"'");
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function extractAnswer(card){
+ const a=card.querySelector('.answer'); if(!a)return '';
+ const clone=a.cloneNode(true); clone.querySelectorAll('button,.exp,.explanation,.speak,.expvoice').forEach(x=>x.remove());
+ let t=clean(clone.textContent).replace(/^R[ÉE]PONSE\s*:\s*/i,'');
+ return t;
+}
+function plausible(correct,pool){
+ const n=norm(correct);
+ if(n==='oui'||n==='non')return shuffle(['Oui','Non']);
+ if(n==='vrai'||n==='faux')return shuffle(['Vrai','Faux']);
+ const num=correct.match(/^([0-9]+(?:[,.][0-9]+)?)\s*(.*)$/);
+ if(num){
+  const v=parseFloat(num[1].replace(',','.')), unit=num[2];
+  const vals=[v*.5,v-1,v+1,v+5,v*2].filter(x=>x>0&&Math.abs(x-v)>.001).map(x=>(Number.isInteger(x)?x:x.toFixed(1).replace('.',','))+(unit?' '+unit:''));
+  return shuffle([correct,...new Set(vals)]).slice(0,4);
+ }
+ const others=pool.filter(x=>norm(x)!==n && norm(x)!=='oui'&&norm(x)!=='non'&&norm(x)!=='vrai'&&norm(x)!=='faux');
+ return shuffle([correct,...shuffle([...new Set(others)]).slice(0,3)]);
+}
+async function load(){
+ try{
+  let all=[];
+  for(let f=1;f<=15;f++){
+   const res=await fetch('fiche-ecrite-'+f+'.html',{cache:'no-store'}); if(!res.ok)throw Error('fiche '+f);
+   const doc=new DOMParser().parseFromString(await res.text(),'text/html');
+   [...doc.querySelectorAll('.card')].forEach((c,i)=>{
+    const q=c.querySelector('.question')||c.querySelector('.q>div:last-child');
+    const ans=extractAnswer(c); if(!q||!ans)return;
+    const img=c.querySelector('img.sign');
+    all.push({fiche:f,no:i+1,q:clean(q.textContent),answer:ans,img:img?img.getAttribute('src'):''});
+   });
+  }
+  if(all.length!==150)throw Error('Nombre de questions trouvé : '+all.length);
+  const pool=all.map(x=>x.answer);
+  all.forEach(x=>x.choices=plausible(x.answer,pool));
+  quiz=shuffle(all); render();
+ }catch(e){card.innerHTML='<div class="loading">Impossible de préparer le QCM : '+e.message+'.</div>';count.textContent='Erreur'}
+}
+function render(){
+ locked=false; const x=quiz[pos]; count.textContent='Question '+(pos+1)+' / '+quiz.length; scoreEl.textContent='Score : '+score; bar.style.width=(pos/quiz.length*100)+'%';
+ card.className='card'; card.innerHTML='';
+ const q=document.createElement('div');q.className='question';q.textContent=x.q;card.appendChild(q);
+ if(x.img){const im=document.createElement('img');im.className='sign';im.src=x.img;im.alt='Illustration de la question';card.appendChild(im)}
+ const choices=document.createElement('div');choices.className='choices';
+ x.choices.forEach(v=>{const b=document.createElement('button');b.className='choice';b.type='button';b.textContent=v;b.addEventListener('click',()=>answer(b,v));choices.appendChild(b)});card.appendChild(choices);
+ const fb=document.createElement('div');fb.id='fb';fb.className='feedback';fb.setAttribute('aria-live','polite');card.appendChild(fb);
+ const next=document.createElement('button');next.id='next';next.className='next';next.type='button';next.textContent=pos===quiz.length-1?'Voir mon résultat →':'Question suivante →';next.addEventListener('click',advance);card.appendChild(next);
+}
+function answer(btn,v){
+ if(locked)return;locked=true;const x=quiz[pos],ok=norm(v)===norm(x.answer);document.querySelectorAll('.choice').forEach(b=>{b.disabled=true;if(norm(b.textContent)===norm(x.answer))b.classList.add('correct')});
+ const fb=document.getElementById('fb');
+ if(ok){score++;scoreEl.textContent='Score : '+score;fb.textContent='🎉 Bonne réponse !';fb.className='feedback ok';card.classList.add('celebrate');sparks(btn)}
+ else{btn.classList.add('wrong');fb.textContent='❌ Réponse attendue : '+x.answer;fb.className='feedback bad'}
+ document.getElementById('next').classList.add('show');
+}
+function sparks(btn){
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const r=btn.getBoundingClientRect();for(let i=0;i<7;i++){const s=document.createElement('span');s.className='spark';s.textContent=['🎉','⭐','✓'][i%3];s.style.left=(r.left+r.width/2)+'px';s.style.top=(r.top+r.height/2)+'px';s.style.setProperty('--x',(Math.random()*160-80)+'px');s.style.setProperty('--y',(-30-Math.random()*100)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),850)}
+}
+function advance(){pos++;if(pos>=quiz.length)return finish();render();window.scrollTo({top:0,behavior:'smooth'})}
+function finish(){
+ bar.style.width='100%';count.textContent='150 / 150';const pct=Math.round(score/quiz.length*100);
+ card.innerHTML='<div class="result"><div class="big">'+score+' / '+quiz.length+'</div><h2>QCM terminé 🎉</h2><p class="small">Résultat : '+pct+' %<br>Les 150 questions ont été parcourues.</p><button class="restart show" type="button" id="restart">🔄 Recommencer avec un nouvel ordre</button></div>';
+ document.getElementById('restart').addEventListener('click',()=>{quiz=shuffle(quiz);pos=0;score=0;scoreEl.textContent='Score : 0';render();window.scrollTo({top:0,behavior:'smooth'})});sparks(card);
+}
+load();
+</script></body></html>
