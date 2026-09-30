@@ -1,0 +1,36 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Thème 6 interactif — Permis C</title>
+<style>
+:root{--bg:#f5f7fa;--text:#172033;--border:#d9dee8;--blue:#1769aa}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.top{position:sticky;top:0;z-index:20;background:rgba(245,247,250,.97);border-bottom:1px solid var(--border);padding:8px}.topin{max-width:1100px;margin:auto;display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #9cc8e6;background:#eaf4fb;color:#0b568c;border-radius:10px;padding:9px 12px;font-weight:800;text-decoration:none;font-size:14px}
+main{max-width:1100px;margin:auto;padding:14px 10px 34px}h1{font-size:25px;margin:4px 0 3px}.sub{color:#667085;margin:0 0 12px}.stage{background:#fff;border:1px solid var(--border);border-radius:16px;padding:8px;box-shadow:0 4px 18px #0001}.pic{position:relative;width:100%;overflow:hidden;border-radius:12px;background:#fff}.pic img{display:block;width:200%;height:auto;max-width:none}.page{display:none}.page.active{display:block}
+/* Source = montage 2x2. Chaque écran affiche un quart de l'image. */
+.crop{position:relative;overflow:hidden;width:100%;aspect-ratio:696/376;background:#fff}.crop img{position:absolute;width:202.299%;max-width:none;height:auto}.p1 img{left:0;top:0}.p2 img{left:-102.299%;top:0}.p3 img{left:0;top:-104.255%}.p4 img{left:-102.299%;top:-104.255%}
+.hot{position:absolute;z-index:4;border:0;background:transparent;color:transparent;width:64px;height:64px;border-radius:50%;font-size:0;transform:translate(-50%,-50%);cursor:pointer}.hot:focus{outline:4px solid #79b7e4}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:12px}.nav button{border:0;border-radius:11px;padding:12px 18px;font-weight:850;font-size:16px;background:var(--blue);color:#fff;cursor:pointer}.nav button:disabled{opacity:.35}.count{align-self:center;font-weight:800;color:#667085}
+@media(max-width:600px){.btn{font-size:12px;padding:8px 9px}h1{font-size:21px}main{padding:10px 6px 25px}.stage{padding:4px}.hot{width:52px;height:52px;font-size:0}}
+</style></head><body>
+<div class="top"><div class="topin"><a class="btn" href="theme-6-menu.html">← Thème 6</a><a class="btn" href="theme-6.html">📝 Version écrite</a><a class="btn" href="trame-theme-6.html">📋 Trame inspecteur</a></div></div>
+<main><h1>🎯 Thème 6 — Interactif</h1><p class="sub">Clique sur un numéro pour écouter.</p><div class="stage">
+<section class="page active"><div class="crop p1"><img src="theme6-source.png" alt="Portes arrière fermées"><button class="hot" style="left:50%;top:48%" onclick="say('1')" aria-label="Numéro 1">1</button></div></section>
+<section class="page"><div class="crop p2"><img src="theme6-source.png" alt="Ouverture des portes"><button class="hot" style="left:76%;top:39%" onclick="say('2-1')" aria-label="Numéro 1">1</button><button class="hot" style="left:51%;top:73%" onclick="say('2-2')" aria-label="Numéro 2">2</button></div></section>
+<section class="page"><div class="crop p3"><img src="theme6-source.png" alt="Contrôle du chargement"><button class="hot" style="left:15%;top:83%" onclick="say('3-1')" aria-label="Numéro 1">1</button><button class="hot" style="left:51%;top:58%" onclick="say('3-2')" aria-label="Numéro 2">2</button><button class="hot" style="left:30%;top:45%" onclick="say('3-3')" aria-label="Numéro 3">3</button><button class="hot" style="left:62%;top:79%" onclick="say('3-4')" aria-label="Numéro 4">4</button><button class="hot" style="left:84%;top:83%" onclick="say('3-5')" aria-label="Numéro 5">5</button></div></section>
+<section class="page"><div class="crop p4"><img src="theme6-source.png" alt="Fermeture des portes"><button class="hot" style="left:35%;top:78%" onclick="say('4-1')" aria-label="Numéro 1">1</button><button class="hot" style="left:50%;top:60%" onclick="say('4-2')" aria-label="Numéro 2">2</button><button class="hot" style="left:50%;top:34%" onclick="say('4-3')" aria-label="Numéro 3">3</button></div></section>
+<div class="nav"><button id="prev" onclick="move(-1)">← Précédent</button><div class="count" id="count">1 / 4</div><button id="next" onclick="move(1)">Suivant →</button></div></div></main>
+<script>
+let current=1;const txt={
+"1":"Mes portes et mes charnières sont en bon état.",
+"2-1":"J'ouvre ma porte, je surveille mon environnement et je fixe la porte. J'annonce : ma porte s'ouvre correctement.",
+"2-2":"Je demande à l'inspecteur si je peux laisser fermé pour avoir trois points d'appui. J'ouvre la seconde porte pour vérifier qu'elle s'ouvre correctement et se ferme correctement.",
+"3-1":"Je monte dans le véhicule à l'aide de trois points d'appui.",
+"3-2":"J'annonce : je suis en présence d'un chargement de autant, qui est bien arrimé et bien réparti.",
+"3-3":"L'ensemble de ma caisse est en bon état et bien étanche.",
+"3-4":"Mon plancher est en bon état.",
+"3-5":"Je descends du véhicule.",
+"4-1":"Je referme ma porte en surveillant mon environnement.",
+"4-2":"Ma porte se ferme correctement.",
+"4-3":"Mes portes sont bien fermées. Thème 6 terminé."
+};
+function stop(){if('speechSynthesis'in window)speechSynthesis.cancel()}function say(k){stop();if(!txt[k]||!('speechSynthesis'in window))return;let u=new SpeechSynthesisUtterance(txt[k]);u.lang='fr-FR';u.rate=.86;u.pitch=1;speechSynthesis.speak(u)}
+function render(){stop();document.querySelectorAll('.page').forEach((e,i)=>e.classList.toggle('active',i===current-1));count.textContent=current+' / 4';prev.disabled=current===1;next.disabled=current===4;window.scrollTo({top:0,behavior:'smooth'})}
+function move(d){let n=current+d;if(n<1||n>4)return;current=n;render()}document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});window.addEventListener('pagehide',stop);render();
+</script></body></html>
