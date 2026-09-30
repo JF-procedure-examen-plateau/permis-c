@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Thème 3 interactif — Permis C</title>
+<style>
+:root{--bg:#f5f7fa;--card:#fff;--text:#172033;--border:#d9dee8;--blue:#1769aa;--red:#d71920}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.top{position:sticky;top:0;z-index:20;background:rgba(245,247,250,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px}
+.topin{max-width:1100px;margin:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid #9cc8e6;background:#eaf4fb;color:#0b568c;border-radius:10px;padding:9px 12px;font-weight:800;text-decoration:none;font-size:14px;cursor:pointer}
+.stop{margin-left:auto;border-color:#e3a0a0;background:#fff0f0;color:#b42318}
+main{max-width:1100px;margin:auto;padding:14px 10px 34px}
+h1{font-size:25px;margin:4px 0 3px}.sub{color:#667085;margin:0 0 12px}
+.stage{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:8px;box-shadow:0 4px 18px rgba(0,0,0,.06)}
+.pic{position:relative;width:100%;overflow:hidden;border-radius:12px;background:white}
+.pic img{display:block;width:100%;height:auto}
+.hot{position:absolute;border:0;background:transparent;cursor:pointer;border-radius:50%;transform:translate(-50%,-50%);min-width:44px;min-height:44px}
+.hot:focus{outline:3px solid rgba(23,105,170,.5)}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:12px}.nav button{border:0;border-radius:11px;padding:12px 18px;font-weight:850;font-size:16px;background:#1769aa;color:#fff;cursor:pointer}.nav button:disabled{opacity:.35}
+.count{text-align:center;font-weight:800;color:#667085;align-self:center}
+.page{display:none}.page.active{display:block}
+@media(max-width:600px){.topin{gap:6px}.btn{font-size:12px;padding:8px 9px}.stop{margin-left:0}h1{font-size:21px}main{padding:10px 6px 25px}.stage{padding:4px}.hot{min-width:38px;min-height:38px}}
+</style>
+</head>
+<body>
+<div class="top"><div class="topin">
+<a class="btn" href="theme-3-menu.html">← Thème 3</a>
+<a class="btn" href="theme-3.html">📝 Version écrite</a>
+<a class="btn" href="trame-theme-3.html">📋 Trame inspecteur</a>
+
+</div></div>
+<main>
+<h1>🎯 Thème 3 — Interactif</h1>
+<p class="sub">Clique sur un numéro pour écouter.</p>
+<div class="stage">
+<section class="page active" data-page="1">
+<div class="pic">
+<img src="theme3-page1.png" alt="Thème 3 côté conducteur"><div aria-hidden="true" style="position:absolute;right:0;top:0;width:24%;height:18%;background:#fff;pointer-events:none"></div>
+<button class="hot" style="left:31.2%;top:31.7%;width:8%;height:12%" aria-label="Numéro 1" onclick="say(1,1)"></button>
+<button class="hot" style="left:23.7%;top:33.2%;width:8%;height:12%" aria-label="Numéro 2" onclick="say(1,2)"></button>
+</div>
+</section>
+<section class="page" data-page="2">
+<div class="pic">
+<img src="theme3-page2.png" alt="Thème 3 compartiment moteur">
+<button class="hot" style="left:29.9%;top:19%;width:8%;height:12%" aria-label="Numéro 1" onclick="say(2,1)"></button>
+<button class="hot" style="left:52.4%;top:28.5%;width:8%;height:12%" aria-label="Numéro 2" onclick="say(2,2)"></button>
+<button class="hot" style="left:70.3%;top:21.5%;width:8%;height:12%" aria-label="Numéro 3" onclick="say(2,3)"></button>
+<button class="hot" style="left:62.5%;top:83%;width:9%;height:13%" aria-label="Numéro 4" onclick="say(2,4)"></button>
+</div>
+</section>
+<section class="page" data-page="3">
+<div class="pic">
+<img src="theme3-page3.png" alt="Thème 3 côté passager">
+<button class="hot" style="left:74%;top:38%;width:8%;height:12%" aria-label="Numéro 1" onclick="say(3,1)"></button>
+<button class="hot" style="left:66.7%;top:36%;width:8%;height:12%" aria-label="Numéro 2" onclick="say(3,2)"></button>
+<button class="hot" style="left:36.4%;top:73%;width:8%;height:12%" aria-label="Numéro 3" onclick="say(3,3)"></button>
+</div>
+</section>
+<div class="nav"><button id="prev" type="button" onclick="move(-1)">← Précédent</button><div class="count" id="count">1 / 3</div><button id="next" type="button" onclick="move(1)">Suivant →</button></div>
+</div>
+</main>
+<script>
+let current=1;
+const speech={
+"1-1":"Mes vitres latérales et glaces de rétroviseurs sont propres et en bon état.",
+"1-2":"Mes coques de rétroviseurs sont en bon état. Mon rétroviseur est bien fixé.",
+"2-1":"Ici se situe le liquide de refroidissement.",
+"2-2":"Ici se situe l'huile moteur.",
+"2-3":"Ici se situe le liquide lave-glace.",
+"2-4":"Pour vérifier le niveau du liquide de direction, il faut basculer la cabine.",
+"3-1":"Ma coque de rétroviseur est en bon état. Mon rétroviseur est bien fixé.",
+"3-2":"Mes vitres latérales et glaces de rétroviseurs sont propres et en bon état.",
+"3-3":"Ici se situe le réservoir d'AdBlue. Thème 3 terminé."
+};
+function stopVoice(){if("speechSynthesis" in window) speechSynthesis.cancel()}
+function say(p,n){stopVoice();const t=speech[p+"-"+n];if(!t||!("speechSynthesis" in window))return;const u=new SpeechSynthesisUtterance(t);u.lang="fr-FR";u.rate=.86;u.pitch=1;speechSynthesis.speak(u)}
+function render(){stopVoice();document.querySelectorAll(".page").forEach((el,i)=>el.classList.toggle("active",i===current-1));document.getElementById("count").textContent=current+" / 3";document.getElementById("prev").disabled=current===1;document.getElementById("next").disabled=current===3;window.scrollTo({top:0,behavior:"smooth"})}
+function move(d){const n=current+d;if(n<1||n>3)return;current=n;render()}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)stopVoice()});
+window.addEventListener("pagehide",stopVoice);
+document.addEventListener("click",e=>{if(!e.target.closest(".hot")&&!e.target.closest(".stop")){if(e.target.closest("a")||e.target.closest(".nav"))stopVoice()}});
+render();
+</script>
+</body></html>
