@@ -16,7 +16,7 @@ main{max-width:780px;margin:auto;padding:18px 12px 60px}h1{color:var(--b);font-s
 </style></head><body><main>
 <h1>📝 QCM — 15 questions</h1>
 <div class="top"><div class="progress"><div class="bar" id="bar"></div></div><div class="meta"><span id="count">Chargement…</span><span id="score">Score : 0</span></div></div>
-<div class="card" id="card"><div class="loading">Préparation des 150 questions…</div></div>
+<div class="card" id="card"><div class="loading">Préparation de votre série de 15 questions…</div></div>
 </main>
 <script>
 const card=document.getElementById('card'),count=document.getElementById('count'),scoreEl=document.getElementById('score'),bar=document.getElementById('bar');
@@ -56,7 +56,7 @@ async function load(){
     all.push({fiche:f,no:i+1,q:clean(q.textContent),answer:ans,img:img?img.getAttribute('src'):''});
    });
   }
-  if(all.length!==150)throw Error('Nombre de questions trouvé : '+all.length);
+  if(all.length<15)throw Error('Pas assez de questions disponibles');
   const pool=all.map(x=>x.answer);
   all.forEach(x=>x.choices=plausible(x.answer,pool));
   quiz=shuffle(all).slice(0,NB_QUESTIONS); render();
