@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test QCM — 150 questions Permis C</title>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test QCM — Permis C</title>
 <style>
 :root{--b:#21357f;--bg:#f5f6f8;--ok:#16833b;--bad:#b42318;--yellow:#fff29a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#222}
@@ -14,13 +14,13 @@ main{max-width:780px;margin:auto;padding:18px 12px 60px}h1{color:var(--b);font-s
 @media(max-width:520px){.question{font-size:19px}.choice{font-size:16px;padding:13px}.meta{font-size:14px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body><main>
-<h1>📝 QCM — 150 questions</h1>
+<h1>📝 QCM — 15 questions</h1>
 <div class="top"><div class="progress"><div class="bar" id="bar"></div></div><div class="meta"><span id="count">Chargement…</span><span id="score">Score : 0</span></div></div>
 <div class="card" id="card"><div class="loading">Préparation des 150 questions…</div></div>
 </main>
 <script>
 const card=document.getElementById('card'),count=document.getElementById('count'),scoreEl=document.getElementById('score'),bar=document.getElementById('bar');
-let quiz=[],pos=0,score=0,locked=false;
+let quiz=[],pos=0,score=0,locked=false; const NB_QUESTIONS=15;
 const clean=s=>s.replace(/\s+/g,' ').trim();
 const norm=s=>clean(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’']/g,"'");
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -59,7 +59,7 @@ async function load(){
   if(all.length!==150)throw Error('Nombre de questions trouvé : '+all.length);
   const pool=all.map(x=>x.answer);
   all.forEach(x=>x.choices=plausible(x.answer,pool));
-  quiz=shuffle(all); render();
+  quiz=shuffle(all).slice(0,NB_QUESTIONS); render();
  }catch(e){card.innerHTML='<div class="loading">Impossible de préparer le QCM : '+e.message+'.</div>';count.textContent='Erreur'}
 }
 function render(){
@@ -85,9 +85,9 @@ function sparks(btn){
 }
 function advance(){pos++;if(pos>=quiz.length)return finish();render();window.scrollTo({top:0,behavior:'smooth'})}
 function finish(){
- bar.style.width='100%';count.textContent='150 / 150';const pct=Math.round(score/quiz.length*100);
- card.innerHTML='<div class="result"><div class="big">'+score+' / '+quiz.length+'</div><h2>QCM terminé 🎉</h2><p class="small">Résultat : '+pct+' %<br>Les 150 questions ont été parcourues.</p><button class="restart show" type="button" id="restart">🔄 Recommencer avec un nouvel ordre</button></div>';
- document.getElementById('restart').addEventListener('click',()=>{quiz=shuffle(quiz);pos=0;score=0;scoreEl.textContent='Score : 0';render();window.scrollTo({top:0,behavior:'smooth'})});sparks(card);
+ bar.style.width='100%';count.textContent=quiz.length+' / '+quiz.length;const pct=Math.round(score/quiz.length*100);
+ card.innerHTML='<div class="result"><div class="big">'+score+' / '+quiz.length+'</div><h2>QCM terminé 🎉</h2><p class="small">Résultat : '+pct+' %<br>Les ${quiz.length} questions de cette série ont été parcourues.</p><button class="restart show" type="button" id="restart">🔄 Recommencer avec un nouvel ordre</button></div>';
+ document.getElementById('restart').addEventListener('click',()=>{load();pos=0;score=0;scoreEl.textContent='Score : 0';window.scrollTo({top:0,behavior:'smooth'})});sparks(card);
 }
 load();
 </script></body></html>
