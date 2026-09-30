@@ -68,8 +68,8 @@ function numericChoices(correct){
  else if(/mm/i.test(unit)) vals=[1,1.6,2,3];
  else vals=[v-1,v+1,v+5,v*2].filter(x=>x>0);
  const fmt=x=>(Number.isInteger(x)?String(x):String(x).replace('.',','))+(unit?' '+unit:'');
- const options=[correct,...vals.filter(x=>Math.abs(x-v)>.001).map(fmt)];
- return shuffle([...new Set(options)]).slice(0,4);
+ const wrong=[...new Set(vals.filter(x=>Math.abs(x-v)>.001).map(fmt).filter(x=>norm(x)!==norm(correct)))];
+ return shuffle([correct,...shuffle(wrong).slice(0,3)]);
 }
 function plausible(question,correct){
  const n=norm(correct).replace(/[.]$/,'');
@@ -77,11 +77,11 @@ function plausible(question,correct){
  if(n==='vrai'||n==='faux')return shuffle(['Vrai','Faux']);
  const nums=numericChoices(correct); if(nums)return nums;
  const key=Object.keys(curated).find(k=>n===k||n.startsWith(k));
- if(key)return shuffle(curated[key]);
+ if(key){const wrong=curated[key].filter(v=>norm(v)!==norm(correct));return shuffle([correct,...shuffle(wrong).slice(0,3)]);}
  // Cas textuel rare : réponses de même nature choisies selon le sujet.
  if(/extincteur/i.test(question))return shuffle([correct,"À l’intérieur de la cabine","À l’extérieur du véhicule","Dans le compartiment moteur"].filter((v,i,a)=>a.findIndex(x=>norm(x)===norm(v))===i)).slice(0,4);
  if(/document|licence|lettre de voiture/i.test(question))return shuffle([correct,"Certificat d’immatriculation","Lettre de voiture","Licence communautaire"].filter((v,i,a)=>a.findIndex(x=>norm(x)===norm(v))===i)).slice(0,4);
- return shuffle([correct,"Aucune de ces réponses","Cela dépend du véhicule","Non concerné"]).slice(0,4);
+ return shuffle([correct,...shuffle(["Aucune de ces réponses","Cela dépend du véhicule","Non concerné"]).slice(0,3)]);
 }
 async function load(){
  try{
