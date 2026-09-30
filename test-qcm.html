@@ -26,22 +26,62 @@ const norm=s=>clean(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function extractAnswer(card){
  const a=card.querySelector('.answer'); if(!a)return '';
+ const ans=a.querySelector('.ans');
+ if(ans)return clean(ans.textContent).replace(/^R[ÉE]PONSE\s*:\s*/i,'');
  const clone=a.cloneNode(true); clone.querySelectorAll('button,.exp,.explanation,.speak,.expvoice').forEach(x=>x.remove());
- let t=clean(clone.textContent).replace(/^R[ÉE]PONSE\s*:\s*/i,'');
- return t;
+ return clean(clone.textContent).replace(/^R[ÉE]PONSE\s*:\s*/i,'');
 }
-function plausible(correct,pool){
- const n=norm(correct);
+const curated={
+ "copie conforme de la licence communautaire":["Copie conforme de la licence communautaire","Certificat d’immatriculation","Lettre de voiture","Attestation d’assurance"],
+ "traverses":["Traverses","Longerons","Ressorts","Amortisseurs"],
+ "graisses":["Graissés","Soudés","Collés","Rivetés"],
+ "poudre, mousse ou co₂":["Poudre, mousse ou CO₂","Eau uniquement","Sable uniquement","Azote uniquement"],
+ "de l’air":["De l’air","Du liquide de frein","De l’huile","De l’eau"],
+ "produits explosifs ou explosifs":["Produits explosifs","Produits alimentaires","Produits frigorifiques","Animaux vivants"],
+ "compte propre ou prive":["Compte propre ou Privé","Transport public","Transport international","Transport exceptionnel"],
+ "a ou la lettre a":["La lettre A","La lettre B","La lettre C","La lettre D"],
+ "d'alimentation":["D'alimentation","De direction","De suspension","D'échappement"],
+ "c ou permis c":["Permis C","Permis B","Permis D","Permis BE"],
+ "lettre de voiture":["Lettre de voiture","Certificat d’immatriculation","Permis de conduire","Carte conducteur"],
+ "pause ou repos":["Pause ou repos","Conduite","Autres tâches","Disponibilité"],
+ "transit international routiers":["Transit International Routiers","Transport Intérieur Routier","Trafic International Régional","Transport Interurbain Routier"],
+ "fimo ou formation initiale minimale obligatoire":["FIMO","FCO","ADR","CACES"],
+ "les roues motrices":["Les roues motrices","Les roues directrices uniquement","Toutes les roues obligatoirement","La roue de secours"],
+ "triangle de presignalisation":["Triangle de présignalisation","Extincteur","Gilet de haute visibilité","Éthylotest"],
+ "suspension pneumatique":["Suspension pneumatique","Suspension mécanique à lames","Suspension hydraulique","Suspension rigide"],
+ "autres taches ou marteaux":["Autres tâches ou Marteaux","Repos ou lit","Disponibilité ou carré barré","Conduite ou volant"],
+ "autres taches ou marteaux.":["Autres tâches ou Marteaux","Repos ou lit","Disponibilité ou carré barré","Conduite ou volant"],
+ "a l'exterieur":["À l'extérieur","À l'intérieur de la cabine","Dans le compartiment moteur","Dans la caisse"],
+ "la borne d'appel":["La borne d'appel","Le téléphone portable","La radio du véhicule","Le chronotachygraphe"]
+};
+function numericChoices(correct){
+ const m=correct.match(/^([0-9]+(?:[,.][0-9]+)?)\s*(.*)$/); if(!m)return null;
+ const v=parseFloat(m[1].replace(',','.')),unit=m[2].trim();
+ let vals;
+ if(/km\/h/i.test(unit)) vals=[50,60,70,80,90,100];
+ else if(/tonne|\bt\b/i.test(unit)) vals=[6,7.5,8,11.5,12,13,19,23,26,32];
+ else if(/heure|\bh\b/i.test(unit)) vals=[2,4.5,9,11,12,24,45];
+ else if(/jour/i.test(unit)) vals=[15,28,56,90];
+ else if(/mois|an/i.test(unit)) vals=[1,2,5,12,24];
+ else if(/mètre|\bm\b/i.test(unit)) vals=[2.55,2.6,4.3,12,50];
+ else if(/kg/i.test(unit)) vals=[400,500,750,1000];
+ else if(/mm/i.test(unit)) vals=[1,1.6,2,3];
+ else vals=[v-1,v+1,v+5,v*2].filter(x=>x>0);
+ const fmt=x=>(Number.isInteger(x)?String(x):String(x).replace('.',','))+(unit?' '+unit:'');
+ const options=[correct,...vals.filter(x=>Math.abs(x-v)>.001).map(fmt)];
+ return shuffle([...new Set(options)]).slice(0,4);
+}
+function plausible(question,correct){
+ const n=norm(correct).replace(/[.]$/,'');
  if(n==='oui'||n==='non')return shuffle(['Oui','Non']);
  if(n==='vrai'||n==='faux')return shuffle(['Vrai','Faux']);
- const num=correct.match(/^([0-9]+(?:[,.][0-9]+)?)\s*(.*)$/);
- if(num){
-  const v=parseFloat(num[1].replace(',','.')), unit=num[2];
-  const vals=[v*.5,v-1,v+1,v+5,v*2].filter(x=>x>0&&Math.abs(x-v)>.001).map(x=>(Number.isInteger(x)?x:x.toFixed(1).replace('.',','))+(unit?' '+unit:''));
-  return shuffle([correct,...new Set(vals)]).slice(0,4);
- }
- const others=pool.filter(x=>norm(x)!==n && norm(x)!=='oui'&&norm(x)!=='non'&&norm(x)!=='vrai'&&norm(x)!=='faux');
- return shuffle([correct,...shuffle([...new Set(others)]).slice(0,3)]);
+ const nums=numericChoices(correct); if(nums)return nums;
+ const key=Object.keys(curated).find(k=>n===k||n.startsWith(k));
+ if(key)return shuffle(curated[key]);
+ // Cas textuel rare : réponses de même nature choisies selon le sujet.
+ if(/extincteur/i.test(question))return shuffle([correct,"À l’intérieur de la cabine","À l’extérieur du véhicule","Dans le compartiment moteur"].filter((v,i,a)=>a.findIndex(x=>norm(x)===norm(v))===i)).slice(0,4);
+ if(/document|licence|lettre de voiture/i.test(question))return shuffle([correct,"Certificat d’immatriculation","Lettre de voiture","Licence communautaire"].filter((v,i,a)=>a.findIndex(x=>norm(x)===norm(v))===i)).slice(0,4);
+ return shuffle([correct,"Aucune de ces réponses","Cela dépend du véhicule","Non concerné"]).slice(0,4);
 }
 async function load(){
  try{
@@ -58,7 +98,7 @@ async function load(){
   }
   if(all.length<15)throw Error('Pas assez de questions disponibles');
   const pool=all.map(x=>x.answer);
-  all.forEach(x=>x.choices=plausible(x.answer,pool));
+  all.forEach(x=>x.choices=plausible(x.q,x.answer));
   quiz=shuffle(all).slice(0,NB_QUESTIONS); render();
  }catch(e){card.innerHTML='<div class="loading">Impossible de préparer le QCM : '+e.message+'.</div>';count.textContent='Erreur'}
 }
