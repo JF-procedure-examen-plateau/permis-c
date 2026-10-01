@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Test Examen blanc</title>
+<style>
+body{font-family:Arial;margin:0;background:#f4f6f9;color:#222}header{background:#fff29a;padding:20px;text-align:center;font-weight:bold;font-size:24px}main{max-width:800px;margin:auto;padding:20px}.box,.q{background:white;border-radius:12px;padding:18px;margin:12px 0}.btn{border:0;border-radius:9px;padding:14px 20px;background:#20347f;color:white;font-weight:bold;font-size:17px;cursor:pointer}.choice{display:block;width:100%;text-align:left;margin:8px 0;padding:13px;border:2px solid #ddd;border-radius:9px;background:white;font-size:16px;cursor:pointer}.choice.sel{border-color:#20347f;background:#eef1ff}.hidden{display:none}.ok{background:#eaf8ee;padding:15px;border-radius:10px}.err{background:#fff0f0;padding:15px;border-radius:10px;margin:10px 0}
+</style></head><body>
+<header>🚛 EXAMEN BLANC — TEST DE LANCEMENT</header><main>
+<div id="home" class="box"><h2>Test</h2><p>Cette version est volontairement simple : aucune fiche externe n'est chargée.</p><button class="btn" id="startBtn">COMMENCER</button></div>
+<div id="exam" class="hidden"><div class="box"><b>FICHES ÉCRITES</b><p>10 questions de test.</p></div><div id="questions"></div><button class="btn" id="finishBtn">TERMINER</button></div>
+<div id="result" class="hidden"><div class="box"><h2>Résultat</h2><div id="score"></div></div></div>
+</main>
+<script>
+(function(){
+"use strict";
+var data=[
+["Un conducteur effectuant un transport de matières dangereuses dans un véhicule fourgon doit-il obligatoirement avoir suivi une formation particulière?",["Oui","Non","Seulement si le véhicule dépasse 19 tonnes"],0],
+["Dans un camion neuf, le conducteur doit-il obligatoirement attacher sa ceinture de sécurité?",["Oui","Non","Seulement sur autoroute"],0],
+["Quelle est la charge utile d’un véhicule dont le PTAC est de 19 t et le poids à vide de 7 t?",["12 tonnes","19 tonnes","26 tonnes"],0]
+];
+var home=document.getElementById("home"),exam=document.getElementById("exam"),result=document.getElementById("result"),questions=document.getElementById("questions"),score=document.getElementById("score"),answers=[];
+function render(){
+questions.innerHTML="";
+for(var i=0;i<data.length;i++){
+var q=document.createElement("div");q.className="q";
+var title=document.createElement("b");title.textContent=(i+1)+". "+data[i][0];q.appendChild(title);
+for(let j=0;j<data[i][1].length;j++){
+var b=document.createElement("button");b.className="choice";b.textContent=String.fromCharCode(65+j)+" — "+data[i][1][j];
+b.onclick=function(){answers[i]=j;var all=q.querySelectorAll(".choice");for(var k=0;k<all.length;k++)all[k].classList.remove("sel");b.classList.add("sel");};
+q.appendChild(b);
+}
+questions.appendChild(q);
+}}
+document.getElementById("startBtn").onclick=function(){home.classList.add("hidden");exam.classList.remove("hidden");render();};
+document.getElementById("finishBtn").onclick=function(){var n=0;for(var i=0;i<data.length;i++)if(answers[i]!==data[i][2])n++;score.innerHTML="<div class='"+(n?"err":"ok")+"'><b>"+(data.length-n)+"/"+data.length+"</b><br>"+n+" erreur(s).</div>";exam.classList.add("hidden");result.classList.remove("hidden");};
+})();
+</script></body></html>
