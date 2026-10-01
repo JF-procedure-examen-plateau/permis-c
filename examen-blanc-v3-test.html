@@ -54,12 +54,12 @@ function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&am
 async function get(f){var r=await fetch(BASE+f);if(!r.ok)throw Error(f+" : "+r.status);return r.text()}
 function parseWritten(h,fi){var d=new DOMParser().parseFromString(h,"text/html");return Array.from(d.querySelectorAll(".card")).map(function(c){var q=c.querySelector(".question"),a=c.querySelector(".answer"),im=c.querySelector("img");if(!q||!a)return null;return{fi:fi,q:q.textContent.trim(),a:a.textContent.replace(/RÉPONSE\s*:\s*/i,"").trim(),e:(c.querySelector(".explanation")||{}).textContent||"",img:im?im.getAttribute("src"):null}}).filter(Boolean)}
 function parseOral(h,fi){
- var m=h.match(/const BANK=(\\[[\\s\\S]*?\\]);/);
+ var m=h.match(/const BANK=(\[[\s\S]*?\]);/);
  if(m){try{return JSON.parse(m[1]).map(function(x){return{fi:fi,q:x.q,o:x.o,c:x.c,e:x.e||""}})}catch(e){}}
- var fm=h.match(/const full="([\\s\\S]*?)",short=/);
+ var fm=h.match(/const full="([\s\S]*?)",short=/);
  if(!fm)return[];
- var txt=fm[1].replace(/\\\\n/g," ").replace(/\\s+/g," ").trim();
- var parts=txt.split(/\\.\\s+/).map(function(x){return x.trim().replace(/\\.$/,"")}).filter(function(x){return x.length>35});
+ var txt=fm[1].replace(/\\n/g," ").replace(/\s+/g," ").trim();
+ var parts=txt.split(/\.\s+/).map(function(x){return x.trim().replace(/\.$/,"")}).filter(function(x){return x.length>35});
  var pool=parts.slice();
  return shuffle(pool).slice(0,10).map(function(answer){
    var q="Selon la fiche orale n°"+fi+", quelle proposition est correcte ?";
