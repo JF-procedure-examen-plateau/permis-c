@@ -52,7 +52,21 @@ function step(n){document.querySelectorAll("#steps .step").forEach(function(e,i)
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 async function get(f){var r=await fetch(BASE+f);if(!r.ok)throw Error(f+" : "+r.status);return r.text()}
 function parseWritten(h,fi){var d=new DOMParser().parseFromString(h,"text/html");return Array.from(d.querySelectorAll(".card")).map(function(c){var q=c.querySelector(".question"),a=c.querySelector(".answer"),im=c.querySelector("img");if(!q||!a)return null;return{fi:fi,q:q.textContent.trim(),a:a.textContent.replace(/RÉPONSE\s*:\s*/i,"").trim(),e:(c.querySelector(".explanation")||{}).textContent||"",img:im?im.getAttribute("src"):null}}).filter(Boolean)}
-function parseOral(h,fi){var m=h.match(/const BANK=(\[[\s\S]*?\]);/);if(!m)return[];try{return JSON.parse(m[1]).map(function(x){return{fi:fi,q:x.q,o:x.o,c:x.c,e:x.e||""}})}catch(e){return[]}}
+function parseOral(h,fi){
+ var m=h.match(/const BANK=(\\[[\\s\\S]*?\\]);/);
+ if(m){try{return JSON.parse(m[1]).map(function(x){return{fi:fi,q:x.q,o:x.o,c:x.c,e:x.e||""}})}catch(e){}}
+ var fm=h.match(/const full="([\\s\\S]*?)",short=/);
+ if(!fm)return[];
+ var txt=fm[1].replace(/\\\\n/g," ").replace(/\\s+/g," ").trim();
+ var parts=txt.split(/\\.\\s+/).map(function(x){return x.trim().replace(/\\.$/,"")}).filter(function(x){return x.length>35});
+ var pool=parts.slice();
+ return shuffle(pool).slice(0,10).map(function(answer){
+   var q="Selon la fiche orale n°"+fi+", quelle proposition est correcte ?";
+   var bad=shuffle(pool.filter(function(x){return x!==answer})).slice(0,3);
+   var o=shuffle([answer].concat(bad));
+   return{fi:fi,q:q,o:o,c:o.indexOf(answer),e:"La réponse correspond au contenu de la fiche orale n°"+fi+"."};
+ });
+}
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),z=a[i];a[i]=a[j];a[j]=z}return a}
 function render(id,data,ans,mode){document.getElementById(id).innerHTML=data.map(function(q,i){return '<div class="q"><b>'+(i+1)+'. '+esc(q.q)+'</b>'+(q.img?'<img class="sign" src="'+q.img+'">':'')+q.choices.map(function(x,j){return '<button class="choice '+(ans[i]===j?"sel":"")+'" onclick="pick(\''+mode+'\','+i+','+j+')">'+String.fromCharCode(65+j)+' — '+esc(x)+'</button>'}).join("")+'</div>'}).join("")}
 function pick(mode,i,j){var a=mode==="w"?WA:mode==="s1"?S1A:mode==="t"?TA:mode==="o"?OA:S2A;a[i]=j;var d=mode==="w"?W:mode==="s1"?S1.map(function(x){return{q:x[0],choices:x[1]}}):mode==="t"?THEME:mode==="o"?O:S2.map(function(x){return{q:x[0],choices:x[1]}});render(mode==="w"?"w":mode==="s1"?"s1q":mode==="t"?"tq":mode==="o"?"oq":"s2q",d,a,mode)}
