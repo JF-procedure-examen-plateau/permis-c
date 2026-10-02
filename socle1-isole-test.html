@@ -13,12 +13,12 @@ var I=[
 "J'allume les feux de croisement et les feux de détresse."
 ];
 var Q=[
-{p:"INTÉRIEUR",q:"Quel déroulement respecte l'ordre exact de la procédure intérieure ?",c:"Je mets le contact → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → j'ai les documents de bord → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement et les feux de détresse.",w:[
-"Je mets le contact → j'ai les documents de bord → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement et les feux de détresse.",
-"Je mets le contact → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'ai les documents de bord → j'allume les feux de croisement et les feux de détresse.",
-"Je mets le contact → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → j'ai les documents de bord → j'allume les feux de croisement et les feux de détresse → je n'ai pas de voyant cabine allumé, donc cabine verrouillée."
+{p:"INTÉRIEUR",q:"Quelle proposition reprend la procédure intérieure complète dans l'ordre exact ?",c:"Je monte dans le véhicule avec trois points d'appui → je mets le contact → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → j'ai les documents de bord → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement et les feux de détresse.",w:[
+"Je monte dans le véhicule avec trois points d'appui → je mets le contact → j'ai les documents de bord → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement et les feux de détresse.",
+"Je monte dans le véhicule avec trois points d'appui → je mets le contact → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'ai les documents de bord → j'allume les feux de croisement et les feux de détresse.",
+"Je monte dans le véhicule avec trois points d'appui → je mets le contact → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → j'ai les documents de bord → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement."
 ]},
-{p:"INTÉRIEUR",q:"Après l'immobilisation du véhicule, quelle suite respecte la procédure ?",c:"J'ai les documents de bord → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement et les feux de détresse.",w:[
+{p:"INTÉRIEUR",q:"Après le contrôle du frein de parc et l'immobilisation du véhicule, quelle suite est complète et dans le bon ordre ?",c:"J'ai les documents de bord → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement et les feux de détresse.",w:[
 "J'ai les documents de bord → j'allume les feux de croisement et les feux de détresse → je n'ai pas de voyant cabine allumé, donc cabine verrouillée.",
 "Je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'ai les documents de bord → j'allume les feux de croisement et les feux de détresse.",
 "J'ai les documents de bord → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement."
@@ -32,6 +32,16 @@ var Q=[
 "Feux de gabarit • pare-brise • glace d'antéviseur • carrosserie • feux de croisement • feux de détresse • pas d'anomalie.",
 "Feux de gabarit • pare-brise • glace d'antéviseur • carrosserie • feux de croisement • pas de tache sous le véhicule.",
 "Feux de gabarit • pare-brise • glace d'antéviseur • feux de croisement • feux de détresse • pas d'anomalie • pas de tache sous le véhicule."
+]},
+{p:"CÔTÉ PASSAGER",q:"Côté passager : quelle proposition contient tous les éléments à annoncer ?",c:"Carrosserie • vitres latérales • glaces de rétroviseur • répétiteur de feux de détresse • roue.",w:[
+"Carrosserie • vitres latérales • glaces de rétroviseur • roue.",
+"Carrosserie • vitres latérales • répétiteur de feux de détresse • roue.",
+"Carrosserie • glaces de rétroviseur • répétiteur de feux de détresse • roue."
+]},
+{p:"CÔTÉ PASSAGER",q:"Quelle proposition est complète pour le contrôle du côté passager ?",c:"Carrosserie • vitres latérales • glaces de rétroviseur • répétiteur de feux de détresse • roue.",w:[
+"Carrosserie • vitres latérales • glaces de rétroviseur • répétiteur de feux de détresse.",
+"Carrosserie • vitres latérales • glaces de rétroviseur • roue.",
+"Carrosserie • vitres latérales • répétiteur de feux de détresse • roue."
 ]},
 {p:"ARRIÈRE DU CAMION",q:"Pour le contrôle de l'arrière, quelle proposition contient tous les éléments ?",c:"Feux de gabarit • carrosserie • chargement • feux rouges • feux de détresse.",w:[
 "Feux de gabarit • carrosserie • feux rouges • feux de détresse.",
@@ -53,7 +63,7 @@ var Q=[
 "Carrosserie • vitres latérales • glaces de rétroviseur • roue.",
 "Carrosserie • vitres latérales • répétiteur de feux de détresse • roue."
 ]}
-];
+]
 var items=[],pos=0,sel=-1,errors=[],timer,seconds=600;Q.splice(4,0,
 {p:"CÔTÉ PASSAGER",q:"Côté passager : quelle proposition contient tous les éléments à annoncer ?",c:"Carrosserie • vitres latérales • glaces de rétroviseur • répétiteur de feux de détresse • roue.",w:["Carrosserie • vitres latérales • glaces de rétroviseur • roue.","Carrosserie • vitres latérales • répétiteur de feux de détresse • roue.","Carrosserie • glaces de rétroviseur • répétiteur de feux de détresse • roue."]},
 {p:"CÔTÉ PASSAGER",q:"Quelle proposition est complète pour le contrôle du côté passager ?",c:"Carrosserie • vitres latérales • glaces de rétroviseur • répétiteur de feux de détresse • roue.",w:["Carrosserie • vitres latérales • glaces de rétroviseur • répétiteur de feux de détresse.","Carrosserie • vitres latérales • glaces de rétroviseur • roue.","Carrosserie • vitres latérales • répétiteur de feux de détresse • roue."]});
