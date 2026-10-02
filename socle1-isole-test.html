@@ -1,0 +1,28 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test Socle 1</title><style>body{font-family:Arial;background:#f4f6f9;margin:0}header{background:#fff29a;padding:20px;text-align:center;color:#20347f;font-size:24px;font-weight:bold}main{max-width:900px;margin:auto;padding:15px}.box{background:#fff;border-radius:14px;padding:18px;margin:12px 0}.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #ddd;border-radius:9px;padding:14px;margin:9px 0;font-size:15px}.sel{border-color:#20347f;background:#eef1ff}.btn{background:#20347f;color:#fff;border:0;border-radius:9px;padding:14px 20px;font-weight:bold;font-size:16px}.hidden{display:none}.timer{float:right;color:#b42318;font-weight:bold}</style></head><body><header>🚛 TEST — SOCLE 1</header><main>
+<div id="home" class="box"><h2>Socle 1 — intérieur</h2><p>Test isolé pour vérifier l'affichage des questions.</p><button class="btn" id="start">COMMENCER</button></div>
+<div id="exam" class="hidden"><div class="box"><b id="title"></b><span class="timer" id="timer">05:00</span></div><div id="q" class="box"></div><button id="next" class="btn" disabled>VALIDER</button></div>
+<div id="done" class="hidden box"><h2>Test terminé</h2></div></main>
+<script>
+var full=["Monter avec 3 points d’appui.","Fermer la porte sauf consigne contraire de l’inspecteur.","Baisser la vitre.","Mettre le contact. Sur un véhicule à bouton poussoir, vérifier que le contact est réellement mis et pas seulement les accessoires.","Voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé.","Je suis bien en présence des documents de bord.","Je n’ai pas de voyant de cabine allumé, donc la cabine est bien verrouillée.","Allumer les feux de croisement et les feux de détresse.","On procède à la vérification extérieure.","Remonter la vitre. Ouvrir la porte entièrement. Descendre avec 3 points d’appui. Fermer la porte et mettre les gants."];
+var phases=[
+["Au début du contrôle intérieur, quel déroulement respecte l’ordre exact ?",[0,1,2,3,4]],
+["Après la mise du contact, quel déroulement respecte l’ordre exact ?",[3,4,5,6]],
+["Concernant les documents et le verrouillage de la cabine, quel ordre respecte la procédure ?",[4,5,6,7]],
+["Pour les feux puis la transition vers l’extérieur, quel ordre respecte la procédure ?",[6,7,8,9]],
+["Quel déroulement complet respecte l’ordre exact du contrôle intérieur ?",[0,1,2,3,4,5,6,7,8,9]]
+];
+var pos=0,selected=-1,timer;
+function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function render(){
+ var p=phases[pos],correct=p[1].map(i=>full[i]);
+ var wrong1=correct.slice();if(wrong1.length>2){var t=wrong1[1];wrong1[1]=wrong1[2];wrong1[2]=t}
+ var wrong2=correct.slice(0,-1),wrong3=correct.slice();if(wrong3.length>1){var t=wrong3[0];wrong3[0]=wrong3[1];wrong3[1]=t}
+ var opts=sh([correct,wrong1,wrong2,wrong3]);
+ document.getElementById("title").textContent="SOCLE 1 — INTÉRIEUR — "+(pos+1)+" / "+phases.length;
+ document.getElementById("q").innerHTML="<b>"+p[0]+"</b>"+opts.map((o,i)=>"<button class='choice' data-i='"+i+"'>"+String.fromCharCode(65+i)+" — "+o.join(" → ")+"</button>").join("");
+ selected=-1;document.getElementById("next").disabled=true;
+ document.querySelectorAll(".choice").forEach(b=>b.onclick=function(){selected=+b.dataset.i;document.querySelectorAll(".choice").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");document.getElementById("next").disabled=false});
+}
+document.getElementById("start").onclick=function(){document.getElementById("home").classList.add("hidden");document.getElementById("exam").classList.remove("hidden");render();var s=300;timer=setInterval(function(){s--;document.getElementById("timer").textContent=Math.floor(s/60).toString().padStart(2,"0")+":"+String(s%60).padStart(2,"0");if(s<=0)location.reload()},1000)};
+document.getElementById("next").onclick=function(){if(selected<0)return;if(pos<phases.length-1){pos++;render()}else{clearInterval(timer);document.getElementById("exam").classList.add("hidden");document.getElementById("done").classList.remove("hidden")}};
+</script></body></html>
