@@ -1,12 +1,15 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Socle 1 complet — test</title><style>
-body{font-family:Arial,sans-serif;background:#f4f6f9;color:#222;margin:0}header{background:#fff29a;padding:18px;text-align:center;color:#20347f;font-size:23px;font-weight:900}main{max-width:950px;margin:auto;padding:14px}.box{background:#fff;border:1px solid #d7dce3;border-radius:14px;padding:17px;margin:12px 0}.hidden{display:none}.btn{background:#20347f;color:#fff;border:0;border-radius:9px;padding:13px 18px;font-weight:800;font-size:16px;cursor:pointer}.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #d5dae1;border-radius:9px;padding:13px;margin:9px 0;font-size:15px;cursor:pointer}.choice.sel{border-color:#20347f;background:#eef1ff}.timer{float:right;color:#b42318;font-weight:900}.progress{font-weight:800}.err{background:#fff0f0;border-left:5px solid #c62828;padding:13px;margin:9px 0}.ok{background:#edf9f0;border-left:5px solid #16803c;padding:13px;margin:9px 0}.note{background:#fff7df;padding:12px;border-radius:9px}</style></head><body><header>🚛 SOCLE 1 — TEST COMPLET</header><main>
-<section id="home" class="box"><h2>Socle 1 — test de validation</h2><p><b>Ordre :</b> intérieur → extérieur.</p><p>Intérieur : ordre exact. Extérieur : tous les éléments obligatoires doivent être annoncés ; l'ordre entre les éléments n'est pas imposé.</p><p class="note">Une réponse validée est définitive. Ce test est séparé de l'examen blanc.</p><button class="btn" id="start">COMMENCER</button></section>
-<section id="exam" class="hidden"><div class="box"><span id="title" class="progress"></span><span id="timer" class="timer">10:00</span></div><div id="qbox"></div><button id="validate" class="btn" disabled>VALIDER</button></section>
-<section id="result" class="hidden"><div class="box"><h2>Test terminé</h2><div id="out"></div><button class="btn" id="restart">REFAIRE</button></div></section>
-</main><script>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Socle 1 complet</title><style>body{font-family:Arial;background:#f4f6f9;margin:0}header{background:#fff29a;padding:18px;text-align:center;color:#20347f;font-size:23px;font-weight:900}main{max-width:950px;margin:auto;padding:14px}.box{background:#fff;border-radius:14px;padding:18px;margin:12px 0}.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #ddd;border-radius:9px;padding:14px;margin:9px 0;font-size:15px;cursor:pointer}.sel{border-color:#20347f;background:#eef1ff}.btn{background:#20347f;color:#fff;border:0;border-radius:9px;padding:14px 20px;font-weight:bold;font-size:16px}.hidden{display:none}.timer{float:right;color:#b42318;font-weight:bold}.phase{font-weight:900;color:#20347f}.err{background:#fff0f0;padding:12px;border-radius:9px;margin:8px 0}</style></head><body><header>🚛 SOCLE 1 — TEST COMPLET</header><main><section id="home" class="box"><h2>Socle 1 complet</h2><p><b>Intérieur → puis extérieur.</b></p><p>Tu dois aller jusqu'au bout des deux parties.</p><button class="btn" id="start">COMMENCER</button></section><section id="exam" class="hidden"><div class="box"><span id="phase" class="phase"></span><span id="timer" class="timer">10:00</span><div id="count"></div></div><div id="qbox"></div><button class="btn" id="next" disabled>VALIDER</button></section><section id="done" class="hidden box"><h2>Socle 1 terminé</h2><div id="result"></div></section></main><script>
 (function(){
-var I=["Je monte dans le véhicule avec trois points d'appui.","Je mets le contact.","Voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé.","J'ai les documents de bord.","Je n'ai pas de voyant cabine allumé, donc cabine verrouillée.","J'allume les feux de croisement et les feux de détresse.","Je procède à la vérification extérieure."];
-var E=[
+var interior=[
+"Monter dans le véhicule avec trois points d'appui.",
+"Mettre le contact.",
+"Voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé.",
+"J'ai les documents de bord.",
+"Je n'ai pas de voyant cabine allumé, donc cabine verrouillée.",
+"J'allume les feux de croisement et les feux de détresse.",
+"Je procède à la vérification extérieure."
+];
+var exterior=[
 ["Avant du véhicule",["Feux de gabarit","Pare-brise","Glace d'antéviseur","Carrosserie","Feux de croisement","Feux de détresse","Pas d'anomalie"]],
 ["Côté passager — cabine",["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]],
 ["Plaque de tare",["PTAC","Longueur","Largeur","Hauteur"]],
@@ -16,18 +19,61 @@ var E=[
 ["Côté conducteur — carrosserie / bâche",["Carrosserie","Sangles","Cliquets","Feux orangés","Roue arrière"]],
 ["Côté conducteur — cabine",["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]]
 ];
-var stage=0,pos=0,items=[],selected=-1,errors=[],timer=null,seconds=600;
+var phase="interieur",pos=0,items=[],sel=-1,errors=[],timer=null,seconds=600;
 function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-function startTimer(){clearInterval(timer);seconds=600;timer=setInterval(function(){seconds--;document.getElementById("timer").textContent=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");if(seconds<=0){clearInterval(timer);finish()}},1000)}
-function show(){var x=items[pos];selected=-1;document.getElementById("title").textContent=x.title+" — "+(pos+1)+" / "+items.length;document.getElementById("validate").disabled=true;var h="<div class='box'><b>"+esc(x.q)+"</b></div><div class='box'>";x.opts.forEach(function(o,i){h+="<button class='choice' data-i='"+i+"'>"+String.fromCharCode(65+i)+" — "+esc(o)+"</button>"});h+="</div>";document.getElementById("qbox").innerHTML=h;document.querySelectorAll(".choice").forEach(function(b){b.onclick=function(){selected=+b.dataset.i;document.querySelectorAll(".choice").forEach(function(z){z.classList.remove("sel")});b.classList.add("sel");document.getElementById("validate").disabled=false}})}
-function orderQ(q,correct){var wrong=[];for(var k=1;k<=3;k++){var a=correct.slice();if(a.length>2){var j=k%a.length,t=a[j];a[j]=a[(j+1)%a.length];a[(j+1)%a.length]=t}wrong.push(a.join(" → "))}var c=correct.join(" → ");var opts=sh([c].concat(wrong));return{title:"SOCLE 1 — INTÉRIEUR — ORDRE EXACT",q:q,opts:opts,c:opts.indexOf(c)}}
-function interior(){var q=[];q.push(orderQ("Quel ordre respecte le début de la procédure ?",I.slice(0,3)));q.push(orderQ("Après l'installation dans le véhicule, quel ordre respecte la procédure ?",I.slice(1,5)));q.push(orderQ("Après le contrôle du frein de parc et l'immobilisation, quel ordre respecte la procédure ?",I.slice(2,6)));q.push(orderQ("Quel ordre respecte la fin de la procédure intérieure ?",I.slice(4,7)));q.push(orderQ("Quel déroulement complet respecte l'ordre exact ?",I));items=q;pos=0;stage=1;show()}
-function exterior(){items=E.map(function(sec){var c=sec[1],wrong1=c.slice(0,-1),wrong2=c.slice(1),wrong3=c.slice();if(wrong3.length>2){var t=wrong3[1];wrong3[1]=wrong3[2];wrong3[2]=t}var good=c.join(" • "),opts=sh([good,wrong1.join(" • "),wrong2.join(" • "),wrong3.join(" • ")]);return{title:"SOCLE 1 — EXTÉRIEUR",q:"Pour « "+sec[0]+" », quelle proposition contient tous les éléments à annoncer ?",opts:opts,c:opts.indexOf(good)}});pos=0;stage=2;show()}
-function record(){var x=items[pos];if(selected!==x.c)errors.push({q:x.q,expected:x.opts[x.c],got:selected<0?"Aucune réponse":x.opts[selected]})}
-function next(){record();if(pos<items.length-1){pos++;show();return}if(stage===1){exterior();return}finish()}
-function finish(){clearInterval(timer);var h="<p><b>"+(errors.length===0?"Aucune erreur.":"Erreurs : "+errors.length)+"</b></p>";errors.forEach(function(e){h+="<div class='err'><b>"+esc(e.q)+"</b><br>Réponse attendue : "+esc(e.expected)+"<br>Réponse choisie : "+esc(e.got)+"</div>"});document.getElementById("out").innerHTML=h;document.getElementById("exam").classList.add("hidden");document.getElementById("result").classList.remove("hidden")}
-function begin(){document.getElementById("home").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("exam").classList.remove("hidden");errors=[];startTimer();interior()}
-document.getElementById("start").onclick=begin;document.getElementById("validate").onclick=next;document.getElementById("restart").onclick=begin;
+function orderChoices(c){
+ var good=c.join(" → "),a=c.slice(),b=c.slice(),d=c.slice();
+ if(a.length>2){var t=a[1];a[1]=a[2];a[2]=t}
+ if(b.length>3){var u=b[2];b[2]=b[3];b[3]=u}
+ if(d.length>1){var v=d[0];d[0]=d[1];d[1]=v}
+ var o=sh([good,a.join(" → "),b.join(" → "),d.join(" → ")]);
+ return {opts:o,c:o.indexOf(good)};
+}
+function startTimer(){clearInterval(timer);seconds=600;timer=setInterval(function(){seconds--;document.getElementById("timer").textContent=Math.floor(seconds/60).toString().padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");if(seconds<=0){finish()}},1000)}
+function render(){
+ var x=items[pos];sel=-1;document.getElementById("next").disabled=true;
+ document.getElementById("phase").textContent=phase==="interieur"?"SOCLE 1 — INTÉRIEUR":"SOCLE 1 — EXTÉRIEUR";
+ document.getElementById("count").textContent="Question "+(pos+1)+" / "+items.length;
+ var h="<div class='box'><b>"+esc(x.q)+"</b></div><div class='box'>";
+ x.opts.forEach(function(o,i){h+="<button class='choice' data-i='"+i+"'>"+String.fromCharCode(65+i)+" — "+esc(o)+"</button>"});
+ h+="</div>";document.getElementById("qbox").innerHTML=h;
+ document.querySelectorAll(".choice").forEach(function(b){b.onclick=function(){sel=+b.dataset.i;document.querySelectorAll(".choice").forEach(function(z){z.classList.remove("sel")});b.classList.add("sel");document.getElementById("next").disabled=false}})
+}
+function buildInterior(){
+ phase="interieur";
+ var q=[
+ ["Quel ordre respecte le début de la procédure ?",interior.slice(0,3)],
+ ["Après la mise du contact, quel ordre respecte la procédure ?",interior.slice(1,5)],
+ ["Après l'immobilisation, quel ordre respecte la procédure ?",interior.slice(2,6)],
+ ["Pour terminer l'intérieur, quel ordre respecte la procédure ?",interior.slice(4,7)],
+ ["Quel déroulement complet respecte l'ordre exact du contrôle intérieur ?",interior]
+ ];
+ items=q.map(function(x){var z=orderChoices(x[1]);return{q:x[0],opts:z.opts,c:z.c}});
+ pos=0;render()
+}
+function buildExterior(){
+ phase="exterieur";
+ items=exterior.map(function(s){
+   var c=s[1],good=c.join(" • "),a=c.slice(0,-1),b=c.slice(1),d=c.slice();
+   if(d.length>2){var t=d[1];d[1]=d[2];d[2]=t}
+   var o=sh([good,a.join(" • "),b.join(" • "),d.join(" • ")]);
+   return{q:"Pour « "+s[0]+" », quelle proposition contient tous les éléments obligatoires ?",opts:o,c:o.indexOf(good)}
+ });
+ pos=0;render()
+}
+function next(){
+ var x=items[pos];if(sel!==x.c)errors.push({phase:phase,q:x.q,expected:x.opts[x.c],got:sel<0?"Aucune":x.opts[sel]});
+ if(pos<items.length-1){pos++;render();return}
+ if(phase==="interieur"){buildExterior();return}
+ finish()
+}
+function finish(){
+ clearInterval(timer);var h="<p><b>"+(errors.length?"Erreurs : "+errors.length:"Aucune erreur")+"</b></p>";
+ errors.forEach(function(e){h+="<div class='err'><b>"+esc(e.phase)+" — "+esc(e.q)+"</b><br>Réponse attendue : "+esc(e.expected)+"<br>Réponse choisie : "+esc(e.got)+"</div>"});
+ document.getElementById("result").innerHTML=h;document.getElementById("exam").classList.add("hidden");document.getElementById("done").classList.remove("hidden")
+}
+function begin(){document.getElementById("home").classList.add("hidden");document.getElementById("done").classList.add("hidden");document.getElementById("exam").classList.remove("hidden");errors=[];startTimer();buildInterior()}
+document.getElementById("start").onclick=begin;document.getElementById("next").onclick=next;
 })();
 </script></body></html>
