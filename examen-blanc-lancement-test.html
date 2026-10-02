@@ -70,35 +70,38 @@ function written(){var B=bank(),cur=sh(B).slice(0,10);items=cur.map(function(q){
 idx=0;stage=1;startTimer(360);items.forEach(function(x){x.name="FICHES ÉCRITES"});show()}
 function socleInterior(){
   var full=M.socle1.interieur.slice();
-  var phases=[
-    {q:"Au début du contrôle intérieur, quel déroulement respecte l'ordre exact ?", c:full.slice(0,5), d:[
-      [full[0],full[1],full[2],full[4],full[3]],
-      [full[0],full[2],full[1],full[3],full[4]]
-    ]},
-    {q:"Après la mise du contact, quel déroulement respecte l'ordre exact ?", c:full.slice(3,7), d:[
-      [full[3],full[5],full[4],full[6]],
-      [full[3],full[4],full[6],full[5]]
-    ]},
-    {q:"Concernant les documents et le verrouillage de la cabine, quelle proposition respecte l'ordre exact ?", c:full.slice(4,8), d:[
-      [full[4],full[6],full[5],full[7]],
-      [full[4],full[5],full[7],full[6]]
-    ]},
-    {q:"Pour les feux puis la transition vers le contrôle extérieur, quelle proposition respecte l'ordre exact ?", c:full.slice(6,10), d:[
-      [full[6],full[7],full[8],full[9]],
-      [full[7],full[6],full[8],full[9]]
-    ]},
-    {q:"Quel déroulement complet du contrôle intérieur respecte l'ordre imposé ?", c:full, d:[
-      [full[0],full[1],full[2],full[3],full[4],full[5],full[6],full[8],full[7],full[9]],
-      [full[0],full[1],full[2],full[3],full[5],full[4],full[6],full[7],full[8],full[9]]
-    ]}
+  items=[
+    {q:"SOCLE 1 — INTÉRIEUR : quel ordre respecte le début du contrôle ?",opts:[
+      [full[0],full[1],full[2],full[3],full[4]].join(" → "),
+      [full[0],full[1],full[2],full[4],full[3]].join(" → "),
+      [full[0],full[2],full[1],full[3],full[4]].join(" → "),
+      [full[0],full[1],full[3],full[2],full[4]].join(" → ")
+    ],c:0,name:"SOCLE 1 — INTÉRIEUR — ORDRE EXACT"},
+    {q:"SOCLE 1 — INTÉRIEUR : après la mise du contact, quel ordre est correct ?",opts:[
+      [full[3],full[4],full[5],full[6]].join(" → "),
+      [full[3],full[5],full[4],full[6]].join(" → "),
+      [full[3],full[4],full[6],full[5]].join(" → "),
+      [full[4],full[3],full[5],full[6]].join(" → ")
+    ],c:0,name:"SOCLE 1 — INTÉRIEUR — ORDRE EXACT"},
+    {q:"SOCLE 1 — INTÉRIEUR : quel ordre respecte documents puis verrouillage cabine ?",opts:[
+      [full[4],full[5],full[6],full[7]].join(" → "),
+      [full[4],full[6],full[5],full[7]].join(" → "),
+      [full[5],full[4],full[6],full[7]].join(" → "),
+      [full[4],full[5],full[7],full[6]].join(" → ")
+    ],c:0,name:"SOCLE 1 — INTÉRIEUR — ORDRE EXACT"},
+    {q:"SOCLE 1 — INTÉRIEUR : quel ordre respecte les feux et la transition vers l'extérieur ?",opts:[
+      [full[6],full[7],full[8],full[9]].join(" → "),
+      [full[7],full[6],full[8],full[9]].join(" → "),
+      [full[6],full[8],full[7],full[9]].join(" → "),
+      [full[6],full[7],full[9],full[8]].join(" → ")
+    ],c:0,name:"SOCLE 1 — INTÉRIEUR — ORDRE EXACT"},
+    {q:"SOCLE 1 — INTÉRIEUR : quel déroulement complet respecte l'ordre exact ?",opts:[
+      full.join(" → "),
+      [full[0],full[1],full[2],full[3],full[5],full[4],full[6],full[7],full[8],full[9]].join(" → "),
+      [full[0],full[1],full[2],full[4],full[3],full[5],full[6],full[7],full[8],full[9]].join(" → "),
+      [full[0],full[2],full[1],full[3],full[4],full[5],full[6],full[7],full[8],full[9]].join(" → ")
+    ],c:0,name:"SOCLE 1 — INTÉRIEUR — ORDRE EXACT"}
   ];
-  items=phases.map(function(p){
-    var opts=[p.c].concat(p.d);
-    opts=sh(opts);
-    var labels=opts.map(function(a){return a.join(" → ");});
-    var correct=p.c.join(" → ");
-    return {q:p.q,opts:labels,c:labels.indexOf(correct),name:"SOCLE 1 — INTÉRIEUR — ORDRE EXACT"};
-  });
   idx=0;stage=2;startTimer(300);show();
 }
 function exterior(){
