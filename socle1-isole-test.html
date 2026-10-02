@@ -10,15 +10,11 @@ var interior=[
 "Je procède à la vérification extérieure."
 ];
 var exterior=[
-["Avant du véhicule",["Feux de gabarit","Pare-brise","Glace d'antéviseur","Carrosserie","Feux de croisement","Feux de détresse","Pas d'anomalie"]],
-["Côté passager — cabine",["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]],
-["Plaque de tare",["PTAC","Longueur","Largeur","Hauteur"]],
-["Côté passager — carrosserie / bâche",["Carrosserie","Sangles","Cliquets","Ligne de feux orangés","Roue arrière"]],
-["Arrière du véhicule",["Feux de gabarit","Carrosserie","Chargement","Feux rouges","Feux de détresse"]],
-["Essai des feux stop",["ESSAI !"]],
-["Côté conducteur — carrosserie / bâche",["Carrosserie","Sangles","Cliquets","Feux orangés","Roue arrière"]],
-["Côté conducteur — cabine",["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]]
-];
+["1 — FACE AVANT DU CAMION",[["Feux de gabarit","Pare-brise","Glace d'antéviseur","Carrosserie","Feux de croisement","Feux de détresse","Pas d'anomalie"],["Feux de gabarit","Pare-brise","Carrosserie","Feux de croisement","Feux de détresse","Pas d'anomalie"],["Feux de gabarit","Pare-brise","Glace d'antéviseur","Carrosserie","Feux de croisement","Pas d'anomalie"]]],
+["2 — CÔTÉ PASSAGER",[["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"],["Carrosserie","Vitres latérales","Glaces de rétroviseur","Roue"],["Carrosserie","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]]],
+["3 — ARRIÈRE DU CAMION",[["Feux de gabarit","Carrosserie","Chargement","Feux rouges","Feux de détresse"],["Feux de gabarit","Carrosserie","Feux rouges","Feux de détresse"],["Carrosserie","Chargement","Feux rouges","Feux de détresse"]]],
+["4 — CÔTÉ CHAUFFEUR",[["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"],["Carrosserie","Vitres latérales","Glaces de rétroviseur","Roue"],["Carrosserie","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]]]
+]
 var phase="interieur",pos=0,items=[],sel=-1,errors=[],timer=null,seconds=600;
 function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -54,13 +50,12 @@ function buildInterior(){
 }
 function buildExterior(){
  phase="exterieur";
- items=exterior.map(function(s){
-   var c=s[1],good=c.join(" • "),a=c.slice(0,-1),b=c.slice(1),d=c.slice();
-   if(d.length>2){var t=d[1];d[1]=d[2];d[2]=t}
-   var o=sh([good,a.join(" • "),b.join(" • "),d.join(" • ")]);
-   return{q:"Pour « "+s[0]+" », quelle proposition contient tous les éléments obligatoires ?",opts:o,c:o.indexOf(good)}
+ items=exterior.map(function(group){
+   var title=group[0], correct=group[1][0], wrongs=group[1].slice(1);
+   var opts=sh([correct.join(" • ")].concat(wrongs.map(function(x){return x.join(" • ")})));
+   return {q:"Pour la partie « "+title+" », quelle proposition contient tous les éléments obligatoires ?",opts:opts,c:opts.indexOf(correct.join(" • "))};
  });
- pos=0;render()
+ pos=0;render();
 }
 function next(){
  var x=items[pos];if(sel!==x.c)errors.push({phase:phase,q:x.q,expected:x.opts[x.c],got:sel<0?"Aucune":x.opts[sel]});
