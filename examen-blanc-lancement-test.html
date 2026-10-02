@@ -111,10 +111,9 @@ function exterior(){
       variants.push(correct.slice(0,Math.max(1,correct.length-1)));
       variants.push(correct.slice(1));
     }
-    var opts=[correct].concat(variants).map(function(a){return sh(a).join(" ");});
-    var target=correct.slice().sort().join(" ");
+    var opts=[correct.join(" ")].concat(variants.map(function(a){return sh(a).join(" ");}));
     opts=sh(opts);
-    return {q:"Que devez-vous annoncer pour le contrôle : "+sec[0]+" ?",opts:opts,c:opts.indexOf(target),name:"SOCLE 1 — EXTÉRIEUR"};
+    return {q:"Que devez-vous annoncer pour le contrôle : "+sec[0]+" ?",opts:opts,c:opts.indexOf(correct.join(" ")),name:"SOCLE 1 — EXTÉRIEUR"};
   });
   idx=0;stage=3;startTimer(300);show();
 }
