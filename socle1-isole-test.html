@@ -48,7 +48,11 @@ function buildInterior(){
  items=q.map(function(x){var z=orderChoices(x[1]);return{q:x[0],opts:z.opts,c:z.c}});
  pos=0;render()
 }
-function buildExterior(){
+function showExteriorIntro(){
+ document.getElementById("qbox").innerHTML="<div class='box'><h2>🟦 PARTIE 2 — CONTRÔLE EXTÉRIEUR</h2><p><b>La partie intérieure est terminée.</b></p><p>On passe maintenant obligatoirement à l'extérieur du camion dans cet ordre :</p><ol><li>Face avant du camion</li><li>Côté passager</li><li>Arrière du camion</li><li>Côté chauffeur</li></ol><p>Les éléments à annoncer doivent tous être présents. L'ordre des éléments à l'intérieur d'une zone n'est pas imposé.</p></div><button class='btn' id='startExterior'>COMMENCER LA PARTIE EXTÉRIEURE</button>";
+ document.getElementById("next").style.display="none";
+ document.getElementById("startExterior").onclick=function(){document.getElementById("next").style.display="inline-block";buildExterior()};
+}function buildExterior(){
  phase="exterieur";
  items=exterior.map(function(group){
    var title=group[0], correct=group[1][0], wrongs=group[1].slice(1);
@@ -60,7 +64,7 @@ function buildExterior(){
 function next(){
  var x=items[pos];if(sel!==x.c)errors.push({phase:phase,q:x.q,expected:x.opts[x.c],got:sel<0?"Aucune":x.opts[sel]});
  if(pos<items.length-1){pos++;render();return}
- if(phase==="interieur"){buildExterior();return}
+ if(phase==="interieur"){showExteriorIntro();return}
  finish()
 }
 function finish(){
