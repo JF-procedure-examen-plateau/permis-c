@@ -1,28 +1,33 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test Socle 1</title><style>body{font-family:Arial;background:#f4f6f9;margin:0}header{background:#fff29a;padding:20px;text-align:center;color:#20347f;font-size:24px;font-weight:bold}main{max-width:900px;margin:auto;padding:15px}.box{background:#fff;border-radius:14px;padding:18px;margin:12px 0}.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #ddd;border-radius:9px;padding:14px;margin:9px 0;font-size:15px}.sel{border-color:#20347f;background:#eef1ff}.btn{background:#20347f;color:#fff;border:0;border-radius:9px;padding:14px 20px;font-weight:bold;font-size:16px}.hidden{display:none}.timer{float:right;color:#b42318;font-weight:bold}</style></head><body><header>🚛 TEST — SOCLE 1</header><main>
-<div id="home" class="box"><h2>Socle 1 — intérieur</h2><p>Test isolé pour vérifier l'affichage des questions.</p><button class="btn" id="start">COMMENCER</button></div>
-<div id="exam" class="hidden"><div class="box"><b id="title"></b><span class="timer" id="timer">05:00</span></div><div id="q" class="box"></div><button id="next" class="btn" disabled>VALIDER</button></div>
-<div id="done" class="hidden box"><h2>Test terminé</h2></div></main>
-<script>
-var full=["Monter avec 3 points d’appui.","Fermer la porte sauf consigne contraire de l’inspecteur.","Baisser la vitre.","Mettre le contact. Sur un véhicule à bouton poussoir, vérifier que le contact est réellement mis et pas seulement les accessoires.","Voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé.","Je suis bien en présence des documents de bord.","Je n’ai pas de voyant de cabine allumé, donc la cabine est bien verrouillée.","Allumer les feux de croisement et les feux de détresse.","On procède à la vérification extérieure.","Remonter la vitre. Ouvrir la porte entièrement. Descendre avec 3 points d’appui. Fermer la porte et mettre les gants."];
-var phases=[
-["Au début du contrôle intérieur, quel déroulement respecte l’ordre exact ?",[0,1,2,3,4]],
-["Après la mise du contact, quel déroulement respecte l’ordre exact ?",[3,4,5,6]],
-["Concernant les documents et le verrouillage de la cabine, quel ordre respecte la procédure ?",[4,5,6,7]],
-["Pour les feux puis la transition vers l’extérieur, quel ordre respecte la procédure ?",[6,7,8,9]],
-["Quel déroulement complet respecte l’ordre exact du contrôle intérieur ?",[0,1,2,3,4,5,6,7,8,9]]
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Socle 1 complet — test</title><style>
+body{font-family:Arial,sans-serif;background:#f4f6f9;color:#222;margin:0}header{background:#fff29a;padding:18px;text-align:center;color:#20347f;font-size:23px;font-weight:900}main{max-width:950px;margin:auto;padding:14px}.box{background:#fff;border:1px solid #d7dce3;border-radius:14px;padding:17px;margin:12px 0}.hidden{display:none}.btn{background:#20347f;color:#fff;border:0;border-radius:9px;padding:13px 18px;font-weight:800;font-size:16px;cursor:pointer}.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #d5dae1;border-radius:9px;padding:13px;margin:9px 0;font-size:15px;cursor:pointer}.choice.sel{border-color:#20347f;background:#eef1ff}.timer{float:right;color:#b42318;font-weight:900}.progress{font-weight:800}.err{background:#fff0f0;border-left:5px solid #c62828;padding:13px;margin:9px 0}.ok{background:#edf9f0;border-left:5px solid #16803c;padding:13px;margin:9px 0}.note{background:#fff7df;padding:12px;border-radius:9px}</style></head><body><header>🚛 SOCLE 1 — TEST COMPLET</header><main>
+<section id="home" class="box"><h2>Socle 1 — test de validation</h2><p><b>Ordre :</b> intérieur → extérieur.</p><p>Intérieur : ordre exact. Extérieur : tous les éléments obligatoires doivent être annoncés ; l'ordre entre les éléments n'est pas imposé.</p><p class="note">Une réponse validée est définitive. Ce test est séparé de l'examen blanc.</p><button class="btn" id="start">COMMENCER</button></section>
+<section id="exam" class="hidden"><div class="box"><span id="title" class="progress"></span><span id="timer" class="timer">10:00</span></div><div id="qbox"></div><button id="validate" class="btn" disabled>VALIDER</button></section>
+<section id="result" class="hidden"><div class="box"><h2>Test terminé</h2><div id="out"></div><button class="btn" id="restart">REFAIRE</button></div></section>
+</main><script>
+(function(){
+var I=["Je monte dans le véhicule avec trois points d'appui.","Je mets le contact.","Voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé.","J'ai les documents de bord.","Je n'ai pas de voyant cabine allumé, donc cabine verrouillée.","J'allume les feux de croisement et les feux de détresse.","Je procède à la vérification extérieure."];
+var E=[
+["Avant du véhicule",["Feux de gabarit","Pare-brise","Glace d'antéviseur","Carrosserie","Feux de croisement","Feux de détresse","Pas d'anomalie"]],
+["Côté passager — cabine",["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]],
+["Plaque de tare",["PTAC","Longueur","Largeur","Hauteur"]],
+["Côté passager — carrosserie / bâche",["Carrosserie","Sangles","Cliquets","Ligne de feux orangés","Roue arrière"]],
+["Arrière du véhicule",["Feux de gabarit","Carrosserie","Chargement","Feux rouges","Feux de détresse"]],
+["Essai des feux stop",["ESSAI !"]],
+["Côté conducteur — carrosserie / bâche",["Carrosserie","Sangles","Cliquets","Feux orangés","Roue arrière"]],
+["Côté conducteur — cabine",["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]]
 ];
-var pos=0,selected=-1,timer;
+var stage=0,pos=0,items=[],selected=-1,errors=[],timer=null,seconds=600;
 function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
-function render(){
- var p=phases[pos],correct=p[1].map(i=>full[i]);
- var wrong1=correct.slice();if(wrong1.length>2){var t=wrong1[1];wrong1[1]=wrong1[2];wrong1[2]=t}
- var wrong2=correct.slice(0,-1),wrong3=correct.slice();if(wrong3.length>1){var t=wrong3[0];wrong3[0]=wrong3[1];wrong3[1]=t}
- var opts=sh([correct,wrong1,wrong2,wrong3]);
- document.getElementById("title").textContent="SOCLE 1 — INTÉRIEUR — "+(pos+1)+" / "+phases.length;
- document.getElementById("q").innerHTML="<b>"+p[0]+"</b>"+opts.map((o,i)=>"<button class='choice' data-i='"+i+"'>"+String.fromCharCode(65+i)+" — "+o.join(" → ")+"</button>").join("");
- selected=-1;document.getElementById("next").disabled=true;
- document.querySelectorAll(".choice").forEach(b=>b.onclick=function(){selected=+b.dataset.i;document.querySelectorAll(".choice").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");document.getElementById("next").disabled=false});
-}
-document.getElementById("start").onclick=function(){document.getElementById("home").classList.add("hidden");document.getElementById("exam").classList.remove("hidden");render();var s=300;timer=setInterval(function(){s--;document.getElementById("timer").textContent=Math.floor(s/60).toString().padStart(2,"0")+":"+String(s%60).padStart(2,"0");if(s<=0)location.reload()},1000)};
-document.getElementById("next").onclick=function(){if(selected<0)return;if(pos<phases.length-1){pos++;render()}else{clearInterval(timer);document.getElementById("exam").classList.add("hidden");document.getElementById("done").classList.remove("hidden")}};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function startTimer(){clearInterval(timer);seconds=600;timer=setInterval(function(){seconds--;document.getElementById("timer").textContent=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");if(seconds<=0){clearInterval(timer);finish()}},1000)}
+function show(){var x=items[pos];selected=-1;document.getElementById("title").textContent=x.title+" — "+(pos+1)+" / "+items.length;document.getElementById("validate").disabled=true;var h="<div class='box'><b>"+esc(x.q)+"</b></div><div class='box'>";x.opts.forEach(function(o,i){h+="<button class='choice' data-i='"+i+"'>"+String.fromCharCode(65+i)+" — "+esc(o)+"</button>"});h+="</div>";document.getElementById("qbox").innerHTML=h;document.querySelectorAll(".choice").forEach(function(b){b.onclick=function(){selected=+b.dataset.i;document.querySelectorAll(".choice").forEach(function(z){z.classList.remove("sel")});b.classList.add("sel");document.getElementById("validate").disabled=false}})}
+function orderQ(q,correct){var wrong=[];for(var k=1;k<=3;k++){var a=correct.slice();if(a.length>2){var j=k%a.length,t=a[j];a[j]=a[(j+1)%a.length];a[(j+1)%a.length]=t}wrong.push(a.join(" → "))}var c=correct.join(" → ");var opts=sh([c].concat(wrong));return{title:"SOCLE 1 — INTÉRIEUR — ORDRE EXACT",q:q,opts:opts,c:opts.indexOf(c)}}
+function interior(){var q=[];q.push(orderQ("Quel ordre respecte le début de la procédure ?",I.slice(0,3)));q.push(orderQ("Après l'installation dans le véhicule, quel ordre respecte la procédure ?",I.slice(1,5)));q.push(orderQ("Après le contrôle du frein de parc et l'immobilisation, quel ordre respecte la procédure ?",I.slice(2,6)));q.push(orderQ("Quel ordre respecte la fin de la procédure intérieure ?",I.slice(4,7)));q.push(orderQ("Quel déroulement complet respecte l'ordre exact ?",I));items=q;pos=0;stage=1;show()}
+function exterior(){items=E.map(function(sec){var c=sec[1],wrong1=c.slice(0,-1),wrong2=c.slice(1),wrong3=c.slice();if(wrong3.length>2){var t=wrong3[1];wrong3[1]=wrong3[2];wrong3[2]=t}var good=c.join(" • "),opts=sh([good,wrong1.join(" • "),wrong2.join(" • "),wrong3.join(" • ")]);return{title:"SOCLE 1 — EXTÉRIEUR",q:"Pour « "+sec[0]+" », quelle proposition contient tous les éléments à annoncer ?",opts:opts,c:opts.indexOf(good)}});pos=0;stage=2;show()}
+function record(){var x=items[pos];if(selected!==x.c)errors.push({q:x.q,expected:x.opts[x.c],got:selected<0?"Aucune réponse":x.opts[selected]})}
+function next(){record();if(pos<items.length-1){pos++;show();return}if(stage===1){exterior();return}finish()}
+function finish(){clearInterval(timer);var h="<p><b>"+(errors.length===0?"Aucune erreur.":"Erreurs : "+errors.length)+"</b></p>";errors.forEach(function(e){h+="<div class='err'><b>"+esc(e.q)+"</b><br>Réponse attendue : "+esc(e.expected)+"<br>Réponse choisie : "+esc(e.got)+"</div>"});document.getElementById("out").innerHTML=h;document.getElementById("exam").classList.add("hidden");document.getElementById("result").classList.remove("hidden")}
+function begin(){document.getElementById("home").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("exam").classList.remove("hidden");errors=[];startTimer();interior()}
+document.getElementById("start").onclick=begin;document.getElementById("validate").onclick=next;document.getElementById("restart").onclick=begin;
+})();
 </script></body></html>
