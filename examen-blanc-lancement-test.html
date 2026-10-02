@@ -101,7 +101,26 @@ function socleInterior(){
   });
   idx=0;stage=2;startTimer(300);show();
 }
-function exterior(){var sec=M.socle1.exterieur[idx],opts=sh(sec[1].concat(sh(M.socle1.exterieur.flatMap(function(x){return x[1]}).filter(function(x){return sec[1].indexOf(x)<0})).slice(0,3)));stageEl.textContent="SOCLE 1 — EXTÉRIEUR";prog.textContent=" — "+(idx+1)+" / "+M.socle1.exterieur.length+" — ordre libre";validate.disabled=false;var h="<div class='q'><b>"+esc(sec[0])+"</b><p>☑ Coche tous les éléments que le candidat doit annoncer. L'ordre est libre.</p></div><div class='box'>";opts.forEach(function(o,i){h+="<label class='check'><input type='checkbox' data-i='"+i+"'><span>"+esc(o)+"</span></label>"});h+="</div>";qbox.innerHTML=h;validate.onclick=function(){var got=Array.from(qbox.querySelectorAll("input:checked")).map(function(x){return opts[+x.dataset.i]});var ok=got.length===sec[1].length&&sec[1].every(function(x){return got.indexOf(x)>=0});if(!ok)errors.push({where:"Socle 1 extérieur — "+sec[0],expected:sec[1].join(" / "),got:got.join(" / ")});if(idx<M.socle1.exterieur.length-1){idx++;exterior()}else{validate.onclick=advance;theme()}}}
+function exterior(){
+  var sec=M.socle1.exterieur[idx], correct=sec[1].slice();
+  var variants=[];
+  if(correct.length>=3){
+    variants.push(correct.filter(function(_,i){return i!==0;}));
+    variants.push(correct.filter(function(_,i){return i!==correct.length-1;}));
+  } else {
+    variants.push(correct.slice(0,Math.max(1,correct.length-1)));
+    variants.push(correct.slice(1));
+  }
+  var opts=[correct].concat(variants).map(function(a){return sh(a).join(" ");});
+  opts=sh(opts);
+  var correctText=correct.slice().sort().join(" ");
+  items=[{q:"Que devez-vous annoncer pour ce contrôle ?",opts:opts,c:opts.indexOf(correct.slice().sort().join(" ")),name:"SOCLE 1 — EXTÉRIEUR"}];
+  idx=0;
+  stage=3;
+  setHeader("SOCLE 1 — EXTÉRIEUR",1);
+  validate.onclick=advance;
+  show();
+}
 function theme(){var th=M.themes[Math.floor(Math.random()*M.themes.length)];items=sh(th[1]).slice(0,5).map(function(c){return makeMCQ("Dans "+th[0]+", quelle proposition correspond exactement à ce que le candidat doit annoncer ?",c,th[1])});items.forEach(function(x){x.name=th[0]});idx=0;stage=4;startTimer(300);show()}
 async function oral(){stage=5;oralNo=Math.floor(Math.random()*12)+1;stageEl.textContent="FICHE ORALE N°"+oralNo;prog.textContent=" — tirée au sort";qbox.innerHTML="<div class='box'>Chargement de la fiche orale…</div>";validate.disabled=true;try{var res=await fetch("fiche-"+oralNo+".html");var txt=await res.text();var m=txt.match(/const full="([\s\S]*?)",short=/);if(!m)throw Error("fiche introuvable");oralFull=m[1].replace(/\\n/g," ");var sent=oralFull.split(/\.\s+/).map(function(s){return s.trim()}).filter(function(s){return s.length>70&&s.length<420});var picked=sh(sent).slice(0,8);items=picked.map(function(c){return makeMCQ("Selon la fiche orale n°"+oralNo+", quelle affirmation correspond au contenu de la fiche ?",c,sent)});items.forEach(function(x){x.name="FICHE ORALE N°"+oralNo});idx=0;startTimer(300);show()}catch(e){qbox.innerHTML="<div class='err'>Impossible de charger la fiche orale. Le reste du test reste inchangé. Erreur : "+esc(e.message)+"</div>";validate.disabled=false;validate.textContent="Passer au Socle 2";validate.onclick=function(){validate.textContent="VALIDER";validate.onclick=advance;socle2()}}}
 function socle2(){stage=6;items=M.socle2.map(function(c,i){return makeMCQ("SOCLE 2 — quelle est l'action correcte à l'étape "+(i+1)+" ?",c,M.socle2)});items.forEach(function(x){x.name="SOCLE 2 — ORDRE EXACT"});idx=0;stage=6;startTimer(300);show()}
