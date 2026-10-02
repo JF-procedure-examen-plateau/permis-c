@@ -1,78 +1,66 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Socle 1 complet</title><style>body{font-family:Arial;background:#f4f6f9;margin:0}header{background:#fff29a;padding:18px;text-align:center;color:#20347f;font-size:23px;font-weight:900}main{max-width:950px;margin:auto;padding:14px}.box{background:#fff;border-radius:14px;padding:18px;margin:12px 0}.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #ddd;border-radius:9px;padding:14px;margin:9px 0;font-size:15px;cursor:pointer}.sel{border-color:#20347f;background:#eef1ff}.btn{background:#20347f;color:#fff;border:0;border-radius:9px;padding:14px 20px;font-weight:bold;font-size:16px}.hidden{display:none}.timer{float:right;color:#b42318;font-weight:bold}.phase{font-weight:900;color:#20347f}.err{background:#fff0f0;padding:12px;border-radius:9px;margin:8px 0}</style></head><body><header>🚛 SOCLE 1 — TEST COMPLET</header><main><section id="home" class="box"><h2>Socle 1 complet</h2><p><b>Intérieur → puis extérieur.</b></p><p>Tu dois aller jusqu'au bout des deux parties.</p><button class="btn" id="start">COMMENCER</button></section><section id="exam" class="hidden"><div class="box"><span id="phase" class="phase"></span><span id="timer" class="timer">10:00</span><div id="count"></div></div><div id="qbox"></div><button class="btn" id="next" disabled>VALIDER</button></section><section id="done" class="hidden box"><h2>Socle 1 terminé</h2><div id="result"></div></section></main><script>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Socle 1 — QCM test</title><style>
+body{font-family:Arial,sans-serif;background:#f4f6f9;margin:0;color:#222}header{background:#fff29a;padding:18px;text-align:center;color:#20347f;font-size:23px;font-weight:900}main{max-width:950px;margin:auto;padding:14px}.box{background:#fff;border-radius:14px;padding:18px;margin:12px 0}.hidden{display:none}.btn{background:#20347f;color:#fff;border:0;border-radius:9px;padding:13px 20px;font-weight:800;font-size:16px;cursor:pointer}.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #d5dae1;border-radius:9px;padding:14px;margin:9px 0;font-size:15px;cursor:pointer}.choice.sel{border-color:#20347f;background:#eef1ff}.timer{float:right;color:#b42318;font-weight:900}.phase{font-weight:900;color:#20347f}.err{background:#fff0f0;border-left:5px solid #c62828;padding:13px;margin:9px 0}.ok{background:#edf9f0;border-left:5px solid #16803c;padding:13px;margin:9px 0}</style></head><body><header>🚛 SOCLE 1 — QCM TEST</header><main>
+<section id="home" class="box"><h2>Socle 1</h2><p>8 questions : <b>2 intérieur → 2 face avant → 2 arrière → 2 côté chauffeur</b>.</p><p>Une seule proposition est entièrement correcte. Les autres comportent volontairement des éléments manquants.</p><button class="btn" id="start">COMMENCER</button></section>
+<section id="exam" class="hidden"><div class="box"><span id="phase" class="phase"></span><span id="timer" class="timer">10:00</span><div id="counter"></div></div><div id="qbox"></div><button id="next" class="btn" disabled>VALIDER</button></section>
+<section id="result" class="hidden"><div class="box"><h2>Résultat</h2><div id="out"></div><button class="btn" id="restart">REFAIRE</button></div></section>
+</main><script>
 (function(){
-var interior=[
-"Monter dans le véhicule avec trois points d'appui.",
+var I=[
 "Mettre le contact.",
 "Voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé.",
 "J'ai les documents de bord.",
 "Je n'ai pas de voyant cabine allumé, donc cabine verrouillée.",
-"J'allume les feux de croisement et les feux de détresse.",
-"Je procède à la vérification extérieure."
+"J'allume les feux de croisement et les feux de détresse."
 ];
-var exterior=[
-["1 — FACE AVANT DU CAMION",[["Feux de gabarit","Pare-brise","Glace d'antéviseur","Carrosserie","Feux de croisement","Feux de détresse","Pas d'anomalie"],["Feux de gabarit","Pare-brise","Carrosserie","Feux de croisement","Feux de détresse","Pas d'anomalie"],["Feux de gabarit","Pare-brise","Glace d'antéviseur","Carrosserie","Feux de croisement","Pas d'anomalie"]]],
-["2 — CÔTÉ PASSAGER",[["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"],["Carrosserie","Vitres latérales","Glaces de rétroviseur","Roue"],["Carrosserie","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]]],
-["3 — ARRIÈRE DU CAMION",[["Feux de gabarit","Carrosserie","Chargement","Feux rouges","Feux de détresse"],["Feux de gabarit","Carrosserie","Feux rouges","Feux de détresse"],["Carrosserie","Chargement","Feux rouges","Feux de détresse"]]],
-["4 — CÔTÉ CHAUFFEUR",[["Carrosserie","Vitres latérales","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"],["Carrosserie","Vitres latérales","Glaces de rétroviseur","Roue"],["Carrosserie","Glaces de rétroviseur","Répétiteur de feux de détresse","Roue"]]]
-]
-var phase="interieur",pos=0,items=[],sel=-1,errors=[],timer=null,seconds=600;
+var Q=[
+{p:"INTÉRIEUR",q:"Quel déroulement respecte l'ordre exact de la procédure intérieure ?",c:"Je mets le contact → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → j'ai les documents de bord → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement et les feux de détresse.",w:[
+"Je mets le contact → j'ai les documents de bord → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement et les feux de détresse.",
+"Je mets le contact → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'ai les documents de bord → j'allume les feux de croisement et les feux de détresse.",
+"Je mets le contact → voyant de frein de parc allumé, frein de parc enclenché, véhicule immobilisé → j'ai les documents de bord → j'allume les feux de croisement et les feux de détresse → je n'ai pas de voyant cabine allumé, donc cabine verrouillée."
+]},
+{p:"INTÉRIEUR",q:"Après l'immobilisation du véhicule, quelle suite respecte la procédure ?",c:"J'ai les documents de bord → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement et les feux de détresse.",w:[
+"J'ai les documents de bord → j'allume les feux de croisement et les feux de détresse → je n'ai pas de voyant cabine allumé, donc cabine verrouillée.",
+"Je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'ai les documents de bord → j'allume les feux de croisement et les feux de détresse.",
+"J'ai les documents de bord → je n'ai pas de voyant cabine allumé, donc cabine verrouillée → j'allume les feux de croisement."
+]},
+{p:"FACE AVANT",q:"Face avant : quelle proposition contient tous les éléments à annoncer ?",c:"Feux de gabarit • pare-brise • glace d'antéviseur • carrosserie • feux de croisement • feux de détresse • pas d'anomalie • pas de tache sous le véhicule.",w:[
+"Feux de gabarit • pare-brise • glace d'antéviseur • carrosserie • feux de croisement • pas d'anomalie • pas de tache sous le véhicule.",
+"Feux de gabarit • pare-brise • glace d'antéviseur • carrosserie • feux de croisement • feux de détresse • pas d'anomalie.",
+"Feux de gabarit • pare-brise • carrosserie • feux de croisement • feux de détresse • pas d'anomalie • pas de tache sous le véhicule."
+]},
+{p:"FACE AVANT",q:"Lors du contrôle de la face avant, quelle proposition est complète ?",c:"Feux de gabarit • pare-brise • glace d'antéviseur • carrosserie • feux de croisement • feux de détresse • pas d'anomalie • pas de tache sous le véhicule.",w:[
+"Feux de gabarit • pare-brise • glace d'antéviseur • carrosserie • feux de croisement • feux de détresse • pas d'anomalie.",
+"Feux de gabarit • pare-brise • glace d'antéviseur • carrosserie • feux de croisement • pas de tache sous le véhicule.",
+"Feux de gabarit • pare-brise • glace d'antéviseur • feux de croisement • feux de détresse • pas d'anomalie • pas de tache sous le véhicule."
+]},
+{p:"ARRIÈRE DU CAMION",q:"Pour le contrôle de l'arrière, quelle proposition contient tous les éléments ?",c:"Feux de gabarit • carrosserie • chargement • feux rouges • feux de détresse.",w:[
+"Feux de gabarit • carrosserie • feux rouges • feux de détresse.",
+"Carrosserie • chargement • feux rouges • feux de détresse.",
+"Feux de gabarit • carrosserie • chargement • feux rouges."
+]},
+{p:"ARRIÈRE DU CAMION",q:"Quelle proposition est complète pour l'arrière du camion ?",c:"Feux de gabarit • carrosserie • chargement • feux rouges • feux de détresse.",w:[
+"Feux de gabarit • carrosserie • chargement • feux rouges.",
+"Feux de gabarit • chargement • feux rouges • feux de détresse.",
+"Carrosserie • chargement • feux rouges • feux de détresse."
+]},
+{p:"CÔTÉ CHAUFFEUR",q:"Côté chauffeur : quelle proposition contient tous les éléments à annoncer ?",c:"Carrosserie • vitres latérales • glaces de rétroviseur • répétiteur de feux de détresse • roue.",w:[
+"Carrosserie • vitres latérales • glaces de rétroviseur • roue.",
+"Carrosserie • vitres latérales • répétiteur de feux de détresse • roue.",
+"Carrosserie • glaces de rétroviseur • répétiteur de feux de détresse • roue."
+]},
+{p:"CÔTÉ CHAUFFEUR",q:"Quelle proposition est complète pour le contrôle du côté chauffeur ?",c:"Carrosserie • vitres latérales • glaces de rétroviseur • répétiteur de feux de détresse • roue.",w:[
+"Carrosserie • vitres latérales • glaces de rétroviseur • répétiteur de feux de détresse.",
+"Carrosserie • vitres latérales • glaces de rétroviseur • roue.",
+"Carrosserie • vitres latérales • répétiteur de feux de détresse • roue."
+]}
+];
+var items=[],pos=0,sel=-1,errors=[],timer,seconds=600;
 function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-function orderChoices(c){
- var good=c.join(" → "),a=c.slice(),b=c.slice(),d=c.slice();
- if(a.length>2){var t=a[1];a[1]=a[2];a[2]=t}
- if(b.length>3){var u=b[2];b[2]=b[3];b[3]=u}
- if(d.length>1){var v=d[0];d[0]=d[1];d[1]=v}
- var o=sh([good,a.join(" → "),b.join(" → "),d.join(" → ")]);
- return {opts:o,c:o.indexOf(good)};
-}
-function startTimer(){clearInterval(timer);seconds=600;timer=setInterval(function(){seconds--;document.getElementById("timer").textContent=Math.floor(seconds/60).toString().padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");if(seconds<=0){finish()}},1000)}
-function render(){
- var x=items[pos];sel=-1;document.getElementById("next").disabled=true;
- document.getElementById("phase").textContent=phase==="interieur"?"SOCLE 1 — INTÉRIEUR":"SOCLE 1 — EXTÉRIEUR";
- document.getElementById("count").textContent="Question "+(pos+1)+" / "+items.length;
- var h="<div class='box'><b>"+esc(x.q)+"</b></div><div class='box'>";
- x.opts.forEach(function(o,i){h+="<button class='choice' data-i='"+i+"'>"+String.fromCharCode(65+i)+" — "+esc(o)+"</button>"});
- h+="</div>";document.getElementById("qbox").innerHTML=h;
- document.querySelectorAll(".choice").forEach(function(b){b.onclick=function(){sel=+b.dataset.i;document.querySelectorAll(".choice").forEach(function(z){z.classList.remove("sel")});b.classList.add("sel");document.getElementById("next").disabled=false}})
-}
-function buildInterior(){
- phase="interieur";
- var q=[
- ["Quel ordre respecte le début de la procédure ?",interior.slice(0,3)],
- ["Après la mise du contact, quel ordre respecte la procédure ?",interior.slice(1,5)],
- ["Après l'immobilisation, quel ordre respecte la procédure ?",interior.slice(2,6)],
- ["Pour terminer l'intérieur, quel ordre respecte la procédure ?",interior.slice(4,7)],
- ["Quel déroulement complet respecte l'ordre exact du contrôle intérieur ?",interior]
- ];
- items=q.map(function(x){var z=orderChoices(x[1]);return{q:x[0],opts:z.opts,c:z.c}});
- pos=0;render()
-}
-function showExteriorIntro(){
- document.getElementById("qbox").innerHTML="<div class='box'><h2>🟦 PARTIE 2 — CONTRÔLE EXTÉRIEUR</h2><p><b>La partie intérieure est terminée.</b></p><p>On passe maintenant obligatoirement à l'extérieur du camion dans cet ordre :</p><ol><li>Face avant du camion</li><li>Côté passager</li><li>Arrière du camion</li><li>Côté chauffeur</li></ol><p>Les éléments à annoncer doivent tous être présents. L'ordre des éléments à l'intérieur d'une zone n'est pas imposé.</p></div><button class='btn' id='startExterior'>COMMENCER LA PARTIE EXTÉRIEURE</button>";
- document.getElementById("next").style.display="none";
- document.getElementById("startExterior").onclick=function(){document.getElementById("next").style.display="inline-block";buildExterior()};
-}function buildExterior(){
- phase="exterieur";
- items=exterior.map(function(group){
-   var title=group[0], correct=group[1][0], wrongs=group[1].slice(1);
-   var opts=sh([correct.join(" • ")].concat(wrongs.map(function(x){return x.join(" • ")})));
-   return {q:"Pour la partie « "+title+" », quelle proposition contient tous les éléments obligatoires ?",opts:opts,c:opts.indexOf(correct.join(" • "))};
- });
- pos=0;render();
-}
-function next(){
- var x=items[pos];if(sel!==x.c)errors.push({phase:phase,q:x.q,expected:x.opts[x.c],got:sel<0?"Aucune":x.opts[sel]});
- if(pos<items.length-1){pos++;render();return}
- if(phase==="interieur"){showExteriorIntro();return}
- finish()
-}
-function finish(){
- clearInterval(timer);var h="<p><b>"+(errors.length?"Erreurs : "+errors.length:"Aucune erreur")+"</b></p>";
- errors.forEach(function(e){h+="<div class='err'><b>"+esc(e.phase)+" — "+esc(e.q)+"</b><br>Réponse attendue : "+esc(e.expected)+"<br>Réponse choisie : "+esc(e.got)+"</div>"});
- document.getElementById("result").innerHTML=h;document.getElementById("exam").classList.add("hidden");document.getElementById("done").classList.remove("hidden")
-}
-function begin(){document.getElementById("home").classList.add("hidden");document.getElementById("done").classList.add("hidden");document.getElementById("exam").classList.remove("hidden");errors=[];startTimer();buildInterior()}
-document.getElementById("start").onclick=begin;document.getElementById("next").onclick=next;
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}})}
+function render(){var x=items[pos];sel=-1;document.getElementById("phase").textContent="SOCLE 1 — "+x.p;document.getElementById("counter").textContent="Question "+(pos+1)+" / "+items.length;document.getElementById("next").disabled=true;var opts=sh([x.c].concat(x.w));var h="<div class='box'><b>"+esc(x.q)+"</b></div><div class='box'>";opts.forEach(function(o,i){h+="<button class='choice' data-i='"+i+"'>"+String.fromCharCode(65+i)+" — "+esc(o)+"</button>"});h+="</div>";document.getElementById("qbox").innerHTML=h;document.querySelectorAll(".choice").forEach(function(b){b.onclick=function(){sel=+b.dataset.i;document.querySelectorAll(".choice").forEach(function(z){z.classList.remove("sel")});b.classList.add("sel");document.getElementById("next").disabled=false}})}
+function finish(){clearInterval(timer);var h=errors.length?"<p><b>"+(8-errors.length)+" / 8</b> — "+errors.length+" erreur(s).</p>":"<div class='ok'><b>8 / 8 — aucune erreur.</b></div>";errors.forEach(function(e){h+="<div class='err'><b>"+esc(e.p)+"</b><br>"+esc(e.q)+"<br><b>Réponse attendue :</b> "+esc(e.c)+"<br><b>Ta réponse :</b> "+esc(e.got)+"</div>"});document.getElementById("out").innerHTML=h;document.getElementById("exam").classList.add("hidden");document.getElementById("result").classList.remove("hidden")}
+function next(){var x=items[pos],opts=document.querySelectorAll(".choice"),chosen=opts[sel]?opts[sel].textContent.slice(4):"";var correct=x.c;if(chosen!==correct)errors.push({p:x.p,q:x.q,c:correct,got:chosen});if(pos<items.length-1){pos++;render()}else finish()}
+function begin(){items=sh(Q.slice());pos=0;errors=[];document.getElementById("home").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("exam").classList.remove("hidden");seconds=600;timer=setInterval(function(){seconds--;document.getElementById("timer").textContent=Math.floor(seconds/60).toString().padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");if(seconds<=0)finish()},1000);render()}
+document.getElementById("start").onclick=begin;document.getElementById("next").onclick=next;document.getElementById("restart").onclick=begin;
 })();
 </script></body></html>
